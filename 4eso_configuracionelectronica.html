@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Átomo de Bohr: niveles y subniveles</title>
+<style>
+:root{--bg:#f4f6f9;--fg:#14181f;--mut:#5b6573;--card:#fff;--line:#d3d9e1;--pos:#dc2626;--neg:#2563eb;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1218;--fg:#e8ecf2;--mut:#98a3b3;--card:#171d26;--line:#34404f;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0e1218;--fg:#e8ecf2;--mut:#98a3b3;--card:#171d26;--line:#34404f;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.4 system-ui,-apple-system,"Segoe UI",sans-serif}
+h1{font-size:18px;margin:0;grid-column:1/-1}
+main{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:12px;padding:12px;max-width:1200px;margin:auto}
+@media (max-width:780px){main{grid-template-columns:1fr}}
+#stage{position:relative;background:var(--card);border:2px dashed var(--line);border-radius:16px;transition:border-color .15s}
+#stage.over{border-color:var(--neg);border-style:solid}
+#msg{position:absolute;left:10px;right:10px;top:10px;padding:8px 12px;border-radius:10px;background:var(--card);border:1.5px solid var(--line);font-weight:600;z-index:2}
+#msg.e{border-color:var(--pos);color:var(--pos)}#msg.k{border-color:#059669;color:#059669}
+svg{display:block;width:100%;height:auto;max-height:90vh}
+.ring{fill:none;stroke:currentColor;stroke-width:1.5;opacity:.35}
+.ring.tg{stroke-width:3;opacity:.8}
+.ring.hov{stroke-width:7;opacity:1}
+.ring.err{animation:fl .7s}
+@keyframes fl{40%{stroke:#ef4444;opacity:1;stroke-width:8}}
+.slot{fill:none;stroke:currentColor;stroke-width:1.4;opacity:.5}
+.slot.on{fill:currentColor;opacity:1}
+.pop{animation:pop .4s ease-out;transform-box:fill-box;transform-origin:center}
+@keyframes pop{from{transform:scale(3)}}
+.lab{font:600 10.5px system-ui,sans-serif;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:var(--card);stroke-width:3.5px}
+.lab.nx{font-weight:800;text-decoration:underline}
+#nuc{font:700 13px system-ui,sans-serif;fill:#fff;text-anchor:middle;dominant-baseline:central}
+aside{display:flex;flex-direction:column;gap:12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px}
+.card h2{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--mut);margin:0 0 8px}
+.row{display:flex;gap:6px;align-items:center}
+select,button{font:inherit;color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:8px 10px;min-height:40px}
+select{flex:1}button{cursor:pointer}
+#big{display:flex;align-items:flex-start;gap:6px;margin:10px 0 4px}
+#big .z{font-size:14px;color:var(--mut);padding-top:8px}
+#big .sy{font-size:46px;font-weight:700;line-height:1}
+#big sup{font-size:24px}
+#badge{display:inline-block;padding:3px 10px;border-radius:99px;border:1.5px solid var(--line);font-weight:600;font-size:13px}
+#badge.p{color:var(--pos);border-color:var(--pos)}#badge.n{color:var(--neg);border-color:var(--neg)}
+#cfg{font-size:17px;line-height:1.6;margin-top:8px}
+.mut{color:var(--mut);font-size:13px}
+#box{display:flex;flex-wrap:wrap;gap:5px;min-height:56px;max-height:130px;overflow:auto;padding:8px;border:2px solid var(--line);border-radius:12px}
+.b,.ghost{width:20px;height:20px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#93c5fd,#2563eb)}
+.b{cursor:grab;touch-action:none}
+.ghost{position:fixed;pointer-events:none;transform:translate(-50%,-50%);z-index:9;box-shadow:0 4px 12px #0006}
+.mt{font:600 11px system-ui,sans-serif;fill:var(--fg)}
+.mc{font:9px system-ui,sans-serif;fill:var(--fg);text-anchor:end}
+.mn{font:10px system-ui,sans-serif;fill:var(--mut);text-anchor:middle}
+.mb{fill:var(--card);stroke:var(--line);stroke-width:1.2}
+.mb.tg{stroke-width:2.5;stroke-dasharray:4 2}
+</style></head>
+<body><main>
+<div style="grid-column:1/-1"><h1>Átomo de Bohr: niveles, subniveles y configuración electrónica</h1><div class="mut">por Xabier Díaz “Xabbihutt”</div></div>
+<div id="stage"><div id="msg" hidden></div><svg id="s" viewBox="0 0 660 660" role="img" aria-label="Subniveles ordenados por energía"></svg></div>
+<aside>
+<div class="card"><h2>Elemento</h2>
+<div class="row"><button id="pv" aria-label="Anterior">◀</button><select id="sel"></select><button id="nx" aria-label="Siguiente">▶</button></div>
+<div id="big"><span class="z" id="zz"></span><span class="sy" id="sy"></span></div>
+<span id="badge"></span>
+<div class="mut" id="cnt" style="margin-top:6px"></div>
+<div id="cfg"></div>
+<div class="mut" id="lv"></div></div>
+<div class="card"><h2>Caja de electrones</h2>
+<div id="box"></div>
+<p class="mut" style="margin:8px 0">Suelta la bola sobre el anillo del subnivel que elijas. Un simple toque la coloca en el siguiente subnivel que toca. Cada anillo es un subnivel; cuanto más afuera, más energía.</p>
+<div class="row"><button id="un">Quitar uno</button><button id="cl">Vaciar</button><span class="mut" id="left"></span></div></div>
+<div class="card"><h2>Diagrama de Moeller</h2>
+<svg id="mo" viewBox="0 0 300 214" role="img" aria-label="Diagrama de Moeller"><defs><marker id="ah" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L8 4L0 8z" fill="#8a94a3"/></marker></defs></svg></div>
+</aside></main>
+<script>
+const SYM="H He Li Be B C N O F Ne Na Mg Al Si P S Cl Ar K Ca Sc Ti V Cr Mn Fe Co Ni Cu Zn Ga Ge As Se Br Kr Rb Sr Y Zr Nb Mo Tc Ru Rh Pd Ag Cd In Sn Sb Te I Xe Cs Ba La Ce Pr Nd Pm Sm Eu Gd Tb Dy Ho Er Tm Yb Lu Hf Ta W Re Os Ir Pt Au Hg Tl Pb Bi Po At Rn".split(" ");
+const ORDER=[[1,0],[2,0],[2,1],[3,0],[3,1],[4,0],[3,2],[4,1],[5,0],[4,2],[5,1],[6,0],[4,3],[5,2],[6,1],[7,0],[5,3],[6,2],[7,1]];
+const CAP=[2,6,10,14],NM="spdf",COL=["#2563eb","#059669","#d97706","#9333ea"];
+const NS="http://www.w3.org/2000/svg",C=330,R=k=>34+14.6*k,K=ORDER.length;
+let Z=1,cnt=Array(K).fill(0),hist=[],tm;
+const $=id=>document.getElementById(id),lab=k=>ORDER[k][0]+NM[ORDER[k][1]];
+function el(t,a,p){const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);p.append(e);return e}
+const svg=$("s"),g1=el("g",{},svg),g2=el("g",{},svg),g3=el("g",{},svg),rg=[],slotsBy=[],labs=[];
+ORDER.forEach(([n,l],k)=>{
+  const r=R(k),c=CAP[l],st=2*Math.PI/c;slotsBy[k]=[];
+  rg[k]=el("circle",{cx:C,cy:C,r,class:"ring",style:"color:"+COL[l]},g1);
+  for(let j=0;j<c;j++){const a=-Math.PI/2+(j+.5)*st;
+    slotsBy[k].push(el("circle",{cx:C+r*Math.cos(a),cy:C+r*Math.sin(a),r:4.6,class:"slot",style:"color:"+COL[l]},g2))}
+  const t=el("text",{x:C,y:C-r,class:"lab",style:"fill:"+COL[l]},g3);t.textContent=n+NM[l];labs[k]=t;
+});
+el("circle",{cx:C,cy:C,r:22,fill:"#ef4444"},svg);
+const nuc=el("text",{x:C,y:C,id:"nuc"},svg);
+/* Diagrama de Moeller */
+const mo=$("mo"),ga=el("g",{},mo),gc=el("g",{},mo),cells=[],ctr=k=>{const[n,l]=ORDER[k];return[34+66*l+29,6+28*(n-1)+10.5]};
+for(let s=1;s<=8;s++){const m=ORDER.map((o,k)=>k).filter(k=>ORDER[k][0]+ORDER[k][1]==s).sort((a,b)=>ORDER[b][1]-ORDER[a][1]);
+  if(!m.length)continue;const f=ctr(m[0]),e=ctr(m[m.length-1]);
+  el("line",{x1:f[0]+36,y1:f[1]-15.4,x2:e[0]-36,y2:e[1]+15.4,stroke:"#8a94a3","stroke-width":1.2,"marker-end":"url(#ah)"},ga)}
+for(let n=1;n<=7;n++){const t=el("text",{x:14,y:6+28*(n-1)+14,class:"mn"},gc);t.textContent=n}
+ORDER.forEach(([n,l],k)=>{const[x,y]=ctr(k);
+  const b=el("rect",{x:x-29,y:y-10.5,width:58,height:21,rx:6,class:"mb"},gc);
+  const o=el("rect",{x:x-29,y:y-10.5,width:58,height:21,rx:6,fill:COL[l],"fill-opacity":0},gc);
+  const t=el("text",{x:x-24,y:y+4,class:"mt"},gc);t.textContent=lab(k);
+  const c=el("text",{x:x+25,y:y+3.5,class:"mc"},gc);cells[k]={b,o,c};});
+SYM.forEach((s,i)=>{const o=document.createElement("option");o.value=i+1;o.textContent=(i+1)+" · "+s;$("sel").append(o)});
+const tgtK=()=>{for(let k=0;k<K;k++)if(cnt[k]<CAP[ORDER[k][1]])return k;return -1};
+function render(){
+  const N=hist.length,q=Z-N,left=Z+4-N,sy=SYM[Z-1],tg=tgtK();
+  let cfg="",lv={};
+  ORDER.forEach(([n,l],k)=>{const c=cnt[k];
+    slotsBy[k].forEach((s,j)=>s.classList.toggle("on",j<c));
+    rg[k].classList.toggle("tg",k===tg);labs[k].classList.toggle("nx",k===tg);
+    cells[k].b.classList.toggle("tg",k===tg);cells[k].b.style.stroke=k===tg?COL[l]:"";
+    cells[k].o.setAttribute("fill-opacity",c?.18+.4*c/CAP[l]:0);cells[k].c.textContent=c?c+"/"+CAP[l]:"";
+    if(c>0){cfg+=`<span style="color:${COL[l]}">${n}${NM[l]}<sup>${c}</sup></span> `;lv[n]=(lv[n]||0)+c}});
+  nuc.textContent="+"+Z;
+  const a=Math.abs(q),w=a==1?"electrón":"electrones";
+  $("zz").textContent=Z;$("sy").innerHTML=sy+(q?`<sup>${a>1?a:""}${q>0?"+":"−"}</sup>`:"");
+  const b=$("badge");b.className=q>0?"p":q<0?"n":"";
+  b.textContent=q===0?"Átomo neutro":q>0?`Ion positivo (catión): pierde ${a} ${w}`:`Ion negativo (anión): gana ${a} ${w}`;
+  $("cnt").textContent=`${Z} protones · ${N} electrones`;
+  $("cfg").innerHTML=cfg||"<span class=mut>Configuración: vacía</span>";
+  $("lv").textContent=N?"Electrones por nivel n (1,2,…): "+Object.keys(lv).map(k=>lv[k]).join(" · "):"";
+  $("box").innerHTML='<div class="b"></div>'.repeat(left);
+  $("left").textContent=left+" en la caja";
+}
+function msg(t,c){const m=$("msg");m.textContent=t;m.className=c;m.hidden=false;clearTimeout(tm);tm=setTimeout(()=>m.hidden=true,4500)}
+function bad(k){const r=rg[k];r.classList.remove("err");void r.getBoundingClientRect();r.classList.add("err")}
+function place(k){
+  if(k==null){msg("Suelta el electrón sobre uno de los anillos: cada anillo es un subnivel.","e");return}
+  if(Z+4-hist.length<=0){msg("No quedan electrones en la caja.","e");return}
+  const cap=CAP[ORDER[k][1]],tg=tgtK();
+  if(cnt[k]>=cap){bad(k);msg(`Error: el subnivel ${lab(k)} ya está completo (máximo ${cap} electrones).`,"e");return}
+  if(k!==tg){bad(k);msg(`Error: ${lab(k)} todavía no. Antes hay que llenar ${lab(tg)}, que tiene menos energía (sigue las flechas del diagrama de Moeller).`,"e");return}
+  cnt[k]++;hist.push(k);render();
+  const s=slotsBy[k][cnt[k]-1];s.classList.remove("pop");void s.getBoundingClientRect();s.classList.add("pop");
+  msg(`Electrón colocado en ${lab(k)}.`,"k");
+}
+function setZ(z){Z=Math.max(1,Math.min(86,z));cnt.fill(0);hist=[];$("msg").hidden=true;$("sel").value=Z;render()}
+$("sel").onchange=e=>setZ(+e.target.value);
+$("pv").onclick=()=>setZ(Z-1);$("nx").onclick=()=>setZ(Z+1);
+$("un").onclick=()=>{if(hist.length){cnt[hist.pop()]--;render()}};
+$("cl").onclick=()=>{cnt.fill(0);hist=[];render()};
+const stage=$("stage");
+const inside=e=>{const r=stage.getBoundingClientRect();return e.clientX>=r.left&&e.clientX<=r.right&&e.clientY>=r.top&&e.clientY<=r.bottom};
+function ringAt(e){
+  const r=svg.getBoundingClientRect(),s=Math.min(r.width,r.height)/660;
+  const x=(e.clientX-r.left-(r.width-660*s)/2)/s,y=(e.clientY-r.top-(r.height-660*s)/2)/s,d=Math.hypot(x-C,y-C);
+  if(d<27||d>R(K-1)+14)return null;
+  return Math.max(0,Math.min(K-1,Math.round((d-34)/14.6)));
+}
+$("box").onpointerdown=e=>{
+  if(!e.target.classList.contains("b"))return;
+  e.preventDefault();
+  const g=document.createElement("div");g.className="ghost";document.body.append(g);
+  const sx=e.clientX,sy=e.clientY;let moved=false;
+  const hov=k=>rg.forEach((r,i)=>r.classList.toggle("hov",i===k));
+  const mv=ev=>{g.style.left=ev.clientX+"px";g.style.top=ev.clientY+"px";
+    if(Math.hypot(ev.clientX-sx,ev.clientY-sy)>6)moved=true;
+    const ins=moved&&inside(ev);stage.classList.toggle("over",ins);hov(ins?ringAt(ev):-1)};
+  const up=ev=>{removeEventListener("pointermove",mv);removeEventListener("pointerup",up);removeEventListener("pointercancel",up);
+    g.remove();stage.classList.remove("over");hov(-1);
+    if(!moved){const t=tgtK();if(t>=0)place(t)}else if(inside(ev))place(ringAt(ev))};
+  mv(e);addEventListener("pointermove",mv);addEventListener("pointerup",up);addEventListener("pointercancel",up);
+};
+setZ(11);
+</script></body></html>
