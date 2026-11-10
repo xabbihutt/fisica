@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Gases ideales: p, V, T y n</title>
+<style>
+:root{--bg:#f6f7f9;--fg:#1c2330;--card:#fff;--bd:#d5dae3;--mut:#5d6778;--P:#d23c3c;--V:#2f6fd0;--n:#2a9150;--T:#d9730d;--cv:#fff;--w:#222}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#14181f;--fg:#e8ecf3;--card:#1e2430;--bd:#38414f;--mut:#9aa5b8;--P:#ff7b7b;--V:#7aa8ff;--n:#58d083;--T:#ffa04d;--cv:#1a1f29;--w:#ddd}}
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.4 system-ui,Segoe UI,Arial,sans-serif;padding:12px}
+h1{font-size:18px;margin:0 0 10px}
+.g{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:12px;max-width:1100px;margin:auto}
+@media(max-width:780px){.g{grid-template-columns:1fr}}
+.c{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:10px;margin-bottom:12px}
+.c h2{font-size:13px;margin:0 0 8px;color:var(--mut);text-transform:uppercase;letter-spacing:.04em}
+canvas{width:100%;height:auto;display:block;background:var(--cv);border-radius:8px}
+label{display:block;font-size:13px;margin:6px 0 2px}input[type=range]{width:100%}input:disabled{opacity:.4}
+.row{display:flex;flex-wrap:wrap;gap:6px}
+button{font:inherit;border:1px solid var(--bd);background:var(--card);color:var(--fg);border-radius:8px;padding:7px 10px;cursor:pointer;touch-action:manipulation;user-select:none}
+button.on{background:var(--V);color:#fff;border-color:var(--V)}
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.t{border:1px solid var(--bd);border-radius:8px;padding:6px;text-align:center}
+.t small{display:block;color:var(--mut);font-size:12px}.t b{font-size:19px}
+.th{height:60px;width:14px;margin:4px auto;border:2px solid var(--bd);border-radius:7px;position:relative;overflow:hidden}
+.th i{position:absolute;bottom:0;left:0;right:0;background:var(--T)}
+#eq div{margin:6px 0;overflow-x:auto;white-space:nowrap}.big{font-size:22px}
+.k{border-bottom:3px double currentColor}.cP{color:var(--P)}.cV{color:var(--V)}.cn{color:var(--n)}.cT{color:var(--T)}
+#msg{height:18px;font-size:12px;color:var(--P)}
+</style></head><body>
+<h1>Gases ideales: relación entre presión, volumen, temperatura y cantidad de gas</h1>
+<div class="g"><div>
+<div class="c"><canvas id="cv" width="520" height="420"></canvas><div id="msg"></div>
+<div class="row" id="modes"></div>
+<label>Temperatura (calentar / enfriar): <b id="tv"></b></label><input type="range" id="ts" min="200" max="600" step="5">
+<label>Volumen (mover el émbolo): <b id="vv"></b></label><input type="range" id="vs" min="2" max="10" step="0.1">
+<div class="row" style="margin-top:8px"><button id="bi">➕ Llave de entrada (mantener pulsada)</button><button id="bo">➖ Llave de salida (mantener pulsada)</button></div></div>
+</div><div>
+<div class="c"><h2>Medidores</h2><div class="tiles">
+<div class="t"><small>Presión</small><svg id="man" viewBox="0 0 200 130" width="100%"></svg><b id="pd"></b></div>
+<div class="t"><small>Temperatura</small><div class="th"><i id="thf"></i></div><b id="td"></b></div>
+<div class="t"><small>Volumen</small><b id="vd" style="line-height:3"></b></div>
+<div class="t"><small>Cantidad n</small><b id="nd"></b></div>
+<div class="t"><small>Masa</small><b id="md"></b></div>
+<div class="t"><small>Masa molar M</small><b id="Md"></b></div></div></div>
+<div class="c"><h2>Tipo de gas y conversión masa ↔ moles</h2><div class="row" id="gases"></div><div id="conv" style="margin-top:8px"></div></div>
+<div class="c" id="eq"><h2>Ecuación de estado</h2></div>
+</div></div>
+<script>
+const R=0.082,G={"H₂":2,"He":4,"Ne":20,"N₂":28,"O₂":32,"CO₂":44},GC={"H₂":"#e8564a","He":"#e0b020","Ne":"#d45fb0","N₂":"#3a7bd5","O₂":"#2fa86a","CO₂":"#8a6d5a"};
+let s={n:.4,T:300,V:5},mode="free",P0=0,gas="N₂",inV=false,outV=false,hd=5*34,fl=0,pts=[];
+const $=i=>document.getElementById(i),f=(x,d)=>x.toFixed(d).replace(".",","),P=x=>x.n*R*x.T/x.V;
+const ok=x=>x.V>=2-1e-9&&x.V<=10+1e-9&&x.T>=200&&x.T<=600&&x.n>=.05&&x.n<=1+1e-9&&P(x)<=8+1e-9;
+function apply(c){let x={...s,...c};if(mode=="P")x.V=x.n*R*x.T/P0;if(ok(x)){s=x;return true}fl=40;return false}
+const MD=[["free","Libre"],["V","Cerrar (V constante)"],["P","Abrir (P constante)"],["T","Aislar (T constante)"]];
+MD.forEach(([k,t])=>{const b=document.createElement("button");b.textContent=t;b.dataset.k=k;b.onclick=()=>{mode=k;P0=P(s);sync()};$("modes").append(b)});
+Object.keys(G).forEach(g=>{const b=document.createElement("button");b.textContent=g;b.dataset.g=g;b.onclick=()=>{gas=g;pts=[];sync()};$("gases").append(b)});
+$("ts").oninput=e=>{apply({T:+e.target.value});sync()};$("vs").oninput=e=>{apply({V:+e.target.value});sync()};
+[["bi","in"],["bo","out"]].forEach(([i,k])=>{const b=$(i),set=v=>{k=="in"?inV=v:outV=v};b.onpointerdown=e=>{e.preventDefault();set(true)};["pointerup","pointerleave","pointercancel"].forEach(ev=>b.addEventListener(ev,()=>set(false)))});
+// manómetro
+(()=>{let h='<path d="M30 110 A70 70 0 1 1 170 110" fill="none" stroke="currentColor" stroke-opacity=".3" stroke-width="8"/>';
+for(let i=0;i<=8;i++){const a=(-135+i*33.75)*Math.PI/180,x=100+58*Math.sin(a),y=80-58*Math.cos(a);h+=`<text x="${x}" y="${y+4}" font-size="11" text-anchor="middle" fill="currentColor">${i}</text>`}
+h+='<line id="nd2" x1="100" y1="80" x2="100" y2="28" stroke="#d23c3c" stroke-width="3" stroke-linecap="round"/><circle cx="100" cy="80" r="5" fill="currentColor"/><text x="100" y="125" font-size="11" text-anchor="middle" fill="currentColor">atm</text>';$("man").innerHTML=h})();
+function sync(){
+ const p=P(s),m=s.n*G[gas],M=G[gas];
+ $("ts").value=s.T;$("vs").value=s.V;$("ts").disabled=mode=="T";$("vs").disabled=mode=="V"||mode=="P";
+ $("tv").textContent=f(s.T,0)+" K ("+f(s.T-273,0)+" °C)";$("vv").textContent=f(s.V,1)+" L";
+ document.querySelectorAll("#modes button").forEach(b=>b.className=b.dataset.k==mode?"on":"");
+ document.querySelectorAll("#gases button").forEach(b=>b.className=b.dataset.g==gas?"on":"");
+ $("pd").textContent=f(p,2)+" atm";$("td").textContent=f(s.T,0)+" K";$("vd").textContent=f(s.V,1)+" L";$("nd").textContent=f(s.n,2)+" mol";$("md").textContent=f(m,1)+" g";$("Md").textContent=M+" g/mol";
+ $("nd2").setAttribute("transform","rotate("+(-135+p/8*270)+" 100 80)");$("thf").style.height=((s.T-200)/400*100)+"%";
+ $("conv").innerHTML=`n = m / M = ${f(m,1)} g / ${M} g/mol = <b class=cn>${f(s.n,2)} mol</b>`;
+ const w=(k,h)=>mode==k?`<span class=k>${h}</span>`:h,vp=w("P",`<b class=cP>${f(p,2)} atm</b>`),vv=w("V",`<b class=cV>${f(s.V,1)} L</b>`),vt=w("T",`<b class=cT>${f(s.T,0)} K</b>`),vn=`<b class=cn>${f(s.n,2)} mol</b>`,Rt="0,082 atm·L/(mol·K)";
+ $("eq").innerHTML=`<h2>Ecuación de estado</h2><div class=big><b class=cP>P</b> · <b class=cV>V</b> = <b class=cn>n</b> · R · <b class=cT>T</b></div>
+ <div>${vp} · ${vv} = ${vn} · ${Rt} · ${vt}</div>
+ <div><b class=cP>P</b> = n·R·T / V = (${f(s.n,2)} · 0,082 · ${f(s.T,0)}) / ${f(s.V,1)} = <b class=cP>${f(p,2)} atm</b></div>
+ <div>P·V = ${f(p*s.V,2)} atm·L &nbsp; | &nbsp; n·R·T = ${f(s.n*R*s.T,2)} atm·L ✔</div>`;
+}
+const cv=$("cv"),c=cv.getContext("2d"),K=34,BY=390,X0=160,X1=360;let last=performance.now();
+function loop(t){const dt=Math.min(.05,(t-last)/1000);last=t;
+ if(inV)apply({n:s.n+.15*dt});if(outV)apply({n:s.n-.15*dt});if(inV||outV||fl>0)sync();
+ hd+=(s.V*K-hd)*Math.min(1,dt*10);if(fl>0){fl--;$("msg").textContent="Límite alcanzado: esa acción no es posible con la restricción actual";if(!fl)$("msg").textContent=""}
+ const cs=getComputedStyle(document.documentElement),fg=cs.getPropertyValue("--w").trim()||"#222",top=BY-hd,r=2.5+G[gas]/12,tg=Math.round(s.n*60),k=Math.sqrt(s.T/300)*120;
+ if(pts.length<tg&&Math.random()<.5)pts.push({x:X0+20+Math.random()*(X1-X0-40),y:top+10+Math.random()*(hd-20),a:Math.random()*6.28,s:.6+Math.random()*.8});
+ if(pts.length>tg)pts.splice(Math.floor(Math.random()*pts.length),1);
+ c.clearRect(0,0,520,420);
+ // calentador
+ c.fillStyle=`hsl(${220-220*(s.T-200)/400},80%,55%)`;c.fillRect(X0-10,BY,X1-X0+20,10);
+ // tuberías y llaves
+ [[60,X0,inV,"Entrada"],[X1,460,outV,"Salida"]].forEach(([a,b,on,l])=>{c.fillStyle=on?"#2a9150":"#888";c.fillRect(a,360,b-a,14);c.fillStyle=fg;c.font="12px sans-serif";c.fillText(l,(a+b)/2-20,352);c.beginPath();c.arc((a+b)/2,367,9,0,7);c.fillStyle=on?"#2a9150":"#d23c3c";c.fill()});
+ // émbolo, varilla y extras
+ c.fillStyle=fg;c.fillRect(X0+2,top-8,X1-X0-4,8);c.fillRect(255,0,10,top-8);c.fillRect(235,0,50,8);
+ c.font="12px sans-serif";
+ if(mode=="P"){for(let i=0;i<3;i++){c.fillStyle="#7a8499";c.fillRect(X0+30+i*0,top-8-(i+1)*14,X1-X0-60,13)}c.fillStyle=fg;c.fillText("P cte",X0+8,top-30)}
+ if(mode=="V"){c.fillStyle="#d23c3c";c.fillRect(X0-12,top-6,16,6);c.fillRect(X1-4,top-6,16,6);c.fillStyle=fg;c.fillText("🔒 bloqueado",X1+14,top)}
+ // paredes
+ c.strokeStyle=mode=="T"?"#b08a4a":fg;c.lineWidth=mode=="T"?14:4;c.beginPath();c.moveTo(X0,BY-340);c.lineTo(X0,BY);c.lineTo(X1,BY);c.lineTo(X1,BY-340);c.stroke();
+ if(mode=="T"){c.fillStyle=fg;c.fillText("AISLANTE",X0+70,BY+28)}
+ c.lineWidth=1;c.strokeStyle=fg;c.fillStyle=fg;c.textAlign="right";
+ for(let v=2;v<=10;v+=2){const y=BY-v*K;c.beginPath();c.moveTo(X0-22,y);c.lineTo(X0-8,y);c.stroke();c.fillText(v+" L",X0-26,y+4)}c.textAlign="left";
+ // partículas
+ pts.forEach(p=>{let vx=Math.cos(p.a)*p.s*k,vy=Math.sin(p.a)*p.s*k;p.x+=vx*dt;p.y+=vy*dt;
+  if(p.x<X0+r){p.x=X0+r;p.a=Math.PI-p.a}if(p.x>X1-r){p.x=X1-r;p.a=Math.PI-p.a}
+  if(p.y<top+r){p.y=top+r;p.a=-p.a}if(p.y>BY-r){p.y=BY-r;p.a=-p.a}
+  c.beginPath();c.arc(p.x,p.y,r,0,7);c.fillStyle=GC[gas];c.fill()});
+ requestAnimationFrame(loop)}
+sync();requestAnimationFrame(loop);
+</script></body></html>
