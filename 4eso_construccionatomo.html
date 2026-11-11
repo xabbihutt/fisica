@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Construcción de un átomo</title>
+<style>
+:root{--bg:#f4f6fb;--card:#fff;--ink:#1c2233;--mut:#5d667d;--line:#d5dbe8;--zone:#eaf0fb;--e:#2b7fff;--ok:#1f9d55;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#12151d;--card:#1b2030;--ink:#eef1f8;--mut:#9aa3b8;--line:#33394d;--zone:#232a3d;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#12151d;--card:#1b2030;--ink:#eef1f8;--mut:#9aa3b8;--line:#33394d;--zone:#232a3d;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+header{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;justify-content:space-between;padding:14px 20px 0;max-width:1200px;margin:auto}
+h1{margin:0;font-size:clamp(22px,3vw,32px)}
+.sub{margin:2px 0 0;color:var(--mut)}
+.wrap{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:16px;padding:12px 20px 20px;max-width:1200px;margin:auto}
+@media(max-width:900px){.wrap{grid-template-columns:1fr}}
+.stage{position:relative}
+canvas{width:100%;aspect-ratio:760/600;display:block;border:1px solid var(--line);border-radius:14px;touch-action:none;background:var(--card)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:12px}
+.card h2{margin:0 0 8px;font-size:13px;font-weight:600;color:var(--mut)}
+.btn{font:inherit;padding:9px 12px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer}
+.btn:focus-visible{outline:3px solid var(--e);outline-offset:2px}
+.btn[aria-pressed="true"]{background:var(--e);border-color:var(--e);color:#fff}
+.go{background:var(--ink);color:var(--card);width:100%;margin-top:8px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.nr{text-align:center}
+.nt{display:inline-flex;align-items:center;line-height:1;min-height:56px}
+.ab{display:flex;flex-direction:column;justify-content:space-between;align-items:flex-end;height:50px;font-size:20px;margin-right:3px}
+.sy{font-size:54px;font-weight:600}
+.ch{align-self:flex-start;font-size:22px;margin-left:2px}
+.nm{color:var(--mut);font-size:13px;min-height:18px}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{display:flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:4px 12px}
+.dot{width:12px;height:12px;border-radius:50%}
+.mrow{display:flex;justify-content:space-between;gap:8px;padding:6px 0;border-bottom:1px dashed var(--line);font-size:14px}
+.mrow b{font-variant-numeric:tabular-nums;white-space:nowrap}
+.fn{margin:8px 0 0;color:var(--mut);font-size:12.5px}
+#win{position:absolute;left:50%;top:10px;transform:translateX(-50%);background:var(--ok);color:#fff;padding:10px 16px;border-radius:12px;text-align:center;display:none;pointer-events:none;max-width:90%}
+#toast{position:absolute;left:50%;top:77%;transform:translateX(-50%);background:var(--ink);color:var(--card);padding:7px 12px;border-radius:10px;font-size:14px;opacity:0;transition:opacity .25s;pointer-events:none;max-width:90%;text-align:center}
+@keyframes pulse{50%{box-shadow:0 0 0 7px rgba(31,157,85,.35)}}
+.pulse{animation:pulse 1s infinite}
+@media(prefers-reduced-motion:reduce){.pulse{animation:none}}
+</style></head><body>
+<header><div><h1 data-i="title"></h1><p class="sub">Xabier Díaz “Xabbihutt”</p></div>
+<div><button class="btn" id="lE" aria-pressed="true">ES</button> <button class="btn" id="lG" aria-pressed="false">GL</button> <button class="btn" id="lN" aria-pressed="false">EN</button></div></header>
+<main class="wrap">
+<div class="stage"><canvas id="cv" aria-label="Atom"></canvas><div id="win"></div><div id="toast"></div></div>
+<aside>
+<div class="card"><h2 data-i="mode"></h2><div class="row2"><button class="btn" id="bN" data-i="neutral"></button><button class="btn" id="bI" data-i="ion"></button></div><button class="btn go" id="bR" data-i="reset"></button></div>
+<div class="card row2"><div class="nr"><h2 data-i="goal"></h2><div id="ob"></div></div><div class="nr"><h2 data-i="yours"></h2><div id="bb"></div><div class="nm" id="bn"></div></div></div>
+<div class="card"><h2 data-i="counters"></h2><div class="chips">
+<span class="chip"><i class="dot" style="background:#e5383b"></i>p⁺ <b id="cp">0</b></span>
+<span class="chip"><i class="dot" style="background:#8d99ae"></i>n <b id="cn">0</b></span>
+<span class="chip"><i class="dot" style="background:#2b7fff"></i>e⁻ <b id="ce">0</b></span></div></div>
+<div class="card"><h2 data-i="mass"></h2>
+<div class="mrow"><span data-i="sum"></span><b id="m1"></b></div>
+<div class="mrow"><span data-i="real"></span><b id="m2"></b></div>
+<div class="mrow"><span data-i="defect"></span><b id="m3"></b></div>
+<p class="fn" data-i="note"></p><p class="fn" data-i="cst"></p></div>
+</aside></main>
+<script>
+const MP=1.007276467,MN=1.008664916,ME=0.000548580;
+const EL=[0,
+['H','Hidrógeno','Hidróxeno',1,{1:1.007825032,2:2.014101778}],
+['He','Helio','Helio',4,{3:3.016029322,4:4.002603254}],
+['Li','Litio','Litio',7,{6:6.015122887,7:7.016003437}],
+['Be','Berilio','Berilio',9,{9:9.012183065}],
+['B','Boro','Boro',11,{10:10.012936862,11:11.009305167}],
+['C','Carbono','Carbono',12,{12:12,13:13.003354835}],
+['N','Nitrógeno','Nitróxeno',14,{14:14.003074005,15:15.000108899}],
+['O','Oxígeno','Osíxeno',16,{16:15.99491462,17:16.999131757,18:17.999159613}],
+['F','Flúor','Flúor',19,{19:18.998403163}],
+['Ne','Neón','Neón',20,{20:19.992440176,21:20.993846685,22:21.991385114}],
+['Na','Sodio','Sodio',23,{23:22.989769282}],
+['Mg','Magnesio','Magnesio',24,{24:23.985041697,25:24.985836976,26:25.982592968}],
+['Al','Aluminio','Aluminio',27,{27:26.981538531}],
+['Si','Silicio','Silicio',28,{28:27.976926535,29:28.976494665,30:29.973770137}],
+['P','Fósforo','Fósforo',31,{31:30.973761998}],
+['S','Azufre','Xofre',32,{32:31.972071174,33:32.97145891,34:33.967867004}],
+['Cl','Cloro','Cloro',35,{35:34.968852682,37:36.965902602}],
+['Ar','Argón','Argón',40,{36:35.967546282,38:37.962732161,40:39.962383124}],
+['K','Potasio','Potasio',39,{39:38.963706487,41:40.961825258}],
+['Ca','Calcio','Calcio',40,{40:39.962590866,42:41.958617828,44:43.955481543}]];
+const CH={1:1,3:1,4:2,7:-3,8:-2,9:-1,11:1,12:2,13:3,16:-2,17:-1,19:1,20:2};
+const S={es:{title:'Construcción de un átomo',mode:'Tipo de átomo',neutral:'Átomo neutro',ion:'Ión',reset:'Reiniciar ejercicio',goal:'Objetivo',yours:'Tu átomo',counters:'Partículas colocadas',mass:'Masa atómica',sum:'Suma de masas de las partículas',real:'Masa real del isótopo',defect:'Defecto de masa Δm',note:'Δm = suma − real: es la masa que se “convierte” en energía de enlace (E = Δm·c²).',nuc:'Núcleo: protones y neutrones',cor:'Corteza: electrones',box:['Protones','Neutrones','Electrones'],eNuc:'Los electrones van en la corteza, no en el núcleo.',nCor:'Los protones y neutrones van en el núcleo.',maxP:'Este ejercicio llega hasta Z = 20.',maxN:'Máximo 24 neutrones.',maxE:'Máximo 20 electrones.',win:['¡Enhorabuena! Has construido el átomo.','¡Muy bien! Átomo completado.','¡Perfecto! Lo has conseguido.'],again:'Pulsa «Reiniciar ejercicio» para probar con otro.',cst:'mₚ = 1,00728 u · mₙ = 1,00866 u · mₑ = 0,00055 u'},
+gl:{title:'Construción dun átomo',mode:'Tipo de átomo',neutral:'Átomo neutro',ion:'Ión',reset:'Reiniciar exercicio',goal:'Obxectivo',yours:'O teu átomo',counters:'Partículas colocadas',mass:'Masa atómica',sum:'Suma das masas das partículas',real:'Masa real do isótopo',defect:'Defecto de masa Δm',note:'Δm = suma − real: é a masa que se «converte» en enerxía de ligazón (E = Δm·c²).',nuc:'Núcleo: protóns e neutróns',cor:'Cortiza: electróns',box:['Protóns','Neutróns','Electróns'],eNuc:'Os electróns van na cortiza, non no núcleo.',nCor:'Os protóns e neutróns van no núcleo.',maxP:'Este exercicio chega ata Z = 20.',maxN:'Máximo 24 neutróns.',maxE:'Máximo 20 electróns.',win:['Parabéns! Construíches o átomo.','Moi ben! Átomo completado.','Perfecto! Conseguíchelo.'],again:'Preme «Reiniciar exercicio» para probar con outro.',cst:'mₚ = 1,00728 u · mₙ = 1,00866 u · mₑ = 0,00055 u'},
+en:{title:'Building an atom',mode:'Type of atom',neutral:'Neutral atom',ion:'Ion',reset:'Restart exercise',goal:'Target',yours:'Your atom',counters:'Particles placed',mass:'Atomic mass',sum:'Sum of the particle masses',real:'Actual isotope mass',defect:'Mass defect Δm',note:'Δm = sum − actual: the mass that is “converted” into binding energy (E = Δm·c²).',nuc:'Nucleus: protons and neutrons',cor:'Shells: electrons',box:['Protons','Neutrons','Electrons'],eNuc:'Electrons go in the shells, not in the nucleus.',nCor:'Protons and neutrons go in the nucleus.',maxP:'This exercise goes up to Z = 20.',maxN:'Maximum 24 neutrons.',maxE:'Maximum 20 electrons.',win:['Congratulations! You built the atom.','Well done! Atom completed.','Perfect! You did it.'],again:'Press “Restart exercise” to try another one.',cst:'mₚ = 1.00728 u · mₙ = 1.00866 u · mₑ = 0.00055 u'}};
+const ENN=['','Hydrogen','Helium','Lithium','Beryllium','Boron','Carbon','Nitrogen','Oxygen','Fluorine','Neon','Sodium','Magnesium','Aluminium','Silicon','Phosphorus','Sulfur','Chlorine','Argon','Potassium','Calcium'];
+const $=id=>document.getElementById(id),cv=$('cv'),c=cv.getContext('2d');
+const W=760,H=600,CX=380,CY=240,NZ=96,ZR=225,SR=[100,135,170,205],CAP=[2,8,8,2],OM=[1.7,1.2,.9,.7];
+const R={p:10,n:10,e:5},TY=['p','n','e'],BX=[10,265,520],BY=486,BW=230,BH=100;
+const COL={p:['#ff7b7b','#d62828'],n:['#cfd5e0','#7d8799'],e:['#7bb8ff','#1f63d6']};
+let lang='es',mode='N',T=null,parts=[],drag=null,done=false,ph=[0,0,0,0],fx=[],tt,fc=0,last=0;
+const TH={};
+function readTheme(){const s=getComputedStyle(document.documentElement);['card','ink','mut','line','zone'].forEach(k=>TH[k]=s.getPropertyValue('--'+k).trim())}
+const L=()=>S[lang];
+const POS=[[0,0]];for(let k=1;k<=4;k++)for(let j=0;j<6*k;j++){const a=j*2*Math.PI/(6*k)+k*.5;POS.push([19*k*Math.cos(a),19*k*Math.sin(a)])}
+const HEAP=TY.map((t,b)=>{const a=[],e=t==='e',N=e?27:12,per=e?9:6,dx=e?22:34,dy=e?20:26,x0=BX[b]+(e?22:30),y0=e?528:534;
+for(let i=0;i<N;i++){const r=Math.floor(i/per),k=i%per;a.push([x0+k*dx+(r%2)*(e?9:11)+((i*37)%5-2),y0+r*dy+((i*53)%5-2)])}return a});
+const cnt=t=>parts.filter(p=>p.t===t&&p.s==='a').length;
+const qs=q=>q?(Math.abs(q)>1?Math.abs(q):'')+(q>0?'+':'−'):'';
+const nt=(A,Z,s,q)=>`<span class="nt"><span class="ab"><span>${A}</span><span>${Z}</span></span><span class="sy">${s}</span><span class="ch">${qs(q)}</span></span>`;
+const fmt=x=>x===null?'—':x.toLocaleString(({es:'es-ES',gl:'gl-ES',en:'en-GB'})[lang],{minimumFractionDigits:5,maximumFractionDigits:5})+' u';
+function fit(){const r=cv.getBoundingClientRect(),d=Math.min(devicePixelRatio||1,2),s=r.width*d/W;cv.width=Math.round(r.width*d);cv.height=Math.round(H*s);c.setTransform(s,0,0,s,0,0)}
+new ResizeObserver(fit).observe(cv);
+function relayout(){
+ const ps=parts.filter(p=>p.s==='a'&&p.t==='p'),ns=parts.filter(p=>p.s==='a'&&p.t==='n'),nu=[];let a=0,b=0;
+ while(a<ps.length||b<ns.length){if(b>=ns.length||(a<ps.length&&a*ns.length<=b*ps.length))nu.push(ps[a++]);else nu.push(ns[b++])}
+ let mx=0,my=0;
+ nu.forEach((p,i)=>{mx+=POS[i][0];my+=POS[i][1]});mx/=nu.length||1;my/=nu.length||1;
+ nu.forEach((p,i)=>{p.tx=CX+POS[i][0]-mx;p.ty=CY+POS[i][1]-my});
+ const el=parts.filter(p=>p.s==='a'&&p.t==='e'),n=[0,0,0,0];let sh=0,used=0;
+ el.forEach(p=>{while(used>=CAP[sh]){used=0;sh++}p.sh=sh;used++;p.k=n[sh]++});
+ el.forEach(p=>p.n=n[p.sh]);
+}
+function toast(m){const t=$('toast');t.textContent=m;t.style.opacity=1;clearTimeout(tt);tt=setTimeout(()=>t.style.opacity=0,2600)}
+function out(P){P.s='o'}
+function drop(P){
+ const S=L(),dx=P.x-CX,dy=P.y-CY,d=Math.hypot(dx,dy);
+ if(P.t==='e'){
+  if(d<NZ){out(P);toast(S.eNuc)}
+  else if(d<=ZR){if(cnt('e')>=20){out(P);toast(S.maxE)}else{P.s='a';P.rho=d;P.phi=Math.atan2(dy,dx)}}
+  else out(P);
+ }else{
+  if(d<NZ){
+   if(P.t==='p'&&cnt('p')>=20){out(P);toast(S.maxP)}
+   else if(P.t==='n'&&cnt('n')>=24){out(P);toast(S.maxN)}
+   else P.s='a';
+  }else if(d<=ZR){out(P);toast(S.nCor)}else out(P);
+ }
+}
+function pt(ev){const r=cv.getBoundingClientRect();return[(ev.clientX-r.left)*W/r.width,(ev.clientY-r.top)*W/r.width]}
+cv.addEventListener('pointerdown',ev=>{
+ const[x,y]=pt(ev);let p=null;
+ for(let i=parts.length-1;i>=0;i--){const q=parts[i];if(q.s==='a'&&Math.hypot(q.x-x,q.y-y)<=R[q.t]+(q.t==='e'?5:2)){p=q;break}}
+ if(p){parts.splice(parts.indexOf(p),1);parts.push(p);p.s='d'}
+ else{const b=BX.findIndex(bx=>x>=bx&&x<=bx+BW&&y>=BY&&y<=BY+BH);if(b<0)return;p={t:TY[b],x,y,s:'d',a:1};parts.push(p)}
+ drag=p;p.x=x;p.y=y;cv.setPointerCapture(ev.pointerId);relayout();ui();ev.preventDefault();
+});
+cv.addEventListener('pointermove',ev=>{if(drag){[drag.x,drag.y]=pt(ev)}});
+function release(){if(drag){drop(drag);drag=null;relayout();ui()}}
+cv.addEventListener('pointerup',release);cv.addEventListener('pointercancel',release);
+function pick(){
+ let t;
+ for(let i=0;i<6;i++){
+  const zs=[];for(let z=1;z<=20;z++)if(mode==='N'||CH[z])zs.push(z);
+  const Z=zs[Math.floor(Math.random()*zs.length)],As=Object.keys(EL[Z][4]).map(Number),w=As.map(a=>a===EL[Z][3]?5:1);
+  let r=Math.random()*w.reduce((a,b)=>a+b),A=As[0];for(let j=0;j<As.length;j++){if((r-=w[j])<0){A=As[j];break}}
+  t={Z,A,q:mode==='N'?0:CH[Z]};
+  if(!T||t.Z!==T.Z||t.A!==T.A||t.q!==T.q)break;
+ }
+ return t;
+}
+function newEx(){T=pick();parts=[];drag=null;relayout();ui()}
+function showWin(){const S=L(),w=$('win');w.innerHTML='<b>🎉 '+S.win[Math.floor(Math.random()*3)]+'</b><br><small>'+S.again+'</small>';w.style.display='block'}
+function party(){showWin();$('bR').classList.add('pulse');
+ for(let i=0;i<80;i++){const a=Math.random()*6.283,v=150+Math.random()*250;fx.push({x:CX,y:CY,vx:Math.cos(a)*v,vy:Math.sin(a)*v-150,l:2.2,col:['#e5383b','#2b7fff','#f4b400','#1f9d55','#8d99ae'][i%5]})}}
+function ui(){
+ const p=cnt('p'),n=cnt('n'),e=cnt('e'),Z=p,A=p+n,q=p-e;
+ $('ob').innerHTML=nt(T.A,T.Z,EL[T.Z][0],T.q);
+ $('bb').innerHTML=nt(A,Z,Z?EL[Z][0]:'?',q);
+ $('bn').textContent=Z?(lang==='en'?ENN[Z]:EL[Z][lang==='gl'?2:1])+'-'+A:'—';
+ $('cp').textContent=p;$('cn').textContent=n;$('ce').textContent=e;
+ const sum=p*MP+n*MN+e*ME,iso=Z?EL[Z][4][A]:undefined,real=iso!==undefined?iso+(e-Z)*ME:null;
+ $('m1').textContent=fmt(sum);$('m2').textContent=fmt(real);$('m3').textContent=fmt(real===null?null:Math.abs(sum-real)<5e-6?0:sum-real);
+ const d=Z>=1&&Z===T.Z&&A===T.A&&q===T.q;
+ if(d&&!done)party();
+ if(!d&&done){$('win').style.display='none';$('bR').classList.remove('pulse')}
+ done=d;
+}
+function applyLang(){
+ document.documentElement.lang=lang;document.title=L().title;
+ document.querySelectorAll('[data-i]').forEach(e=>e.textContent=L()[e.dataset.i]);
+ $('lE').setAttribute('aria-pressed',lang==='es');$('lG').setAttribute('aria-pressed',lang==='gl');$('lN').setAttribute('aria-pressed',lang==='en');
+ if(T)ui();if(done)showWin();
+}
+function setMode(m){mode=m;$('bN').setAttribute('aria-pressed',m==='N');$('bI').setAttribute('aria-pressed',m==='I');newEx();$('win').style.display='none';$('bR').classList.remove('pulse');done=false}
+$('bN').onclick=()=>setMode('N');$('bI').onclick=()=>setMode('I');$('bR').onclick=()=>setMode(mode);
+$('lE').onclick=()=>{lang='es';applyLang()};$('lG').onclick=()=>{lang='gl';applyLang()};$('lN').onclick=()=>{lang='en';applyLang()};
+function update(dt){
+ for(let s=0;s<4;s++)ph[s]+=OM[s]*dt;
+ parts.forEach(p=>{
+  if(p.s==='a'){
+   if(p.t==='e'){
+    const slot=ph[p.sh]+p.k*6.28319/p.n+p.sh*.9;let e=slot-p.phi;e=Math.atan2(Math.sin(e),Math.cos(e));
+    p.phi+=OM[p.sh]*dt+e*(1-Math.exp(-2*dt));p.rho+=(SR[p.sh]-p.rho)*(1-Math.exp(-5*dt));
+    p.x=CX+p.rho*Math.cos(p.phi);p.y=CY+p.rho*Math.sin(p.phi);
+   }else{const k=1-Math.exp(-12*dt);p.x+=(p.tx-p.x)*k;p.y+=(p.ty-p.y)*k}
+  }else if(p.s==='o'){const b=BX[TY.indexOf(p.t)],k=1-Math.exp(-8*dt);p.x+=(b+BW/2-p.x)*k;p.y+=(BY+BH/2-p.y)*k;p.a-=dt*2.5}
+ });
+ parts=parts.filter(p=>p.s!=='o'||p.a>0);
+ fx.forEach(f=>{f.x+=f.vx*dt;f.y+=f.vy*dt;f.vy+=500*dt;f.l-=dt});fx=fx.filter(f=>f.l>0);
+}
+function ball(x,y,t,a){
+ const r=R[t],g=c.createRadialGradient(x-r*.35,y-r*.35,r*.1,x,y,r);g.addColorStop(0,COL[t][0]);g.addColorStop(1,COL[t][1]);
+ c.globalAlpha=a;c.fillStyle=g;c.beginPath();c.arc(x,y,r,0,7);c.fill();c.strokeStyle=COL[t][1];c.lineWidth=1;c.stroke();
+ if(t!=='n'){c.strokeStyle='#fff';c.lineWidth=t==='p'?2:1.2;const h=t==='p'?5:2.4;c.beginPath();c.moveTo(x-h,y);c.lineTo(x+h,y);if(t==='p'){c.moveTo(x,y-h);c.lineTo(x,y+h)}c.stroke()}
+ c.globalAlpha=1;
+}
+function draw(){
+ const S=L();c.fillStyle=TH.card;c.fillRect(0,0,W,H);
+ if(drag){const h=Math.hypot(drag.x-CX,drag.y-CY);c.fillStyle=TH.zone;c.beginPath();
+  if(h<NZ)c.arc(CX,CY,NZ,0,7);else if(h<=ZR){c.arc(CX,CY,ZR,0,7);c.moveTo(CX+NZ,CY);c.arc(CX,CY,NZ,0,7)}
+  c.fill('evenodd')}
+ c.strokeStyle=TH.line;c.lineWidth=1;SR.forEach(r=>{c.beginPath();c.arc(CX,CY,r,0,7);c.stroke()});
+ c.setLineDash([4,4]);c.beginPath();c.arc(CX,CY,NZ,0,7);c.stroke();c.setLineDash([]);
+ c.font='13px system-ui,sans-serif';c.fillStyle=TH.mut;c.textAlign='left';c.fillText(S.nuc,14,24);c.fillText(S.cor,14,44);
+ BX.forEach((bx,b)=>{
+  c.beginPath();c.roundRect(bx,BY,BW,BH,12);c.fillStyle=TH.zone;c.fill();c.strokeStyle=TH.line;c.stroke();
+  c.font='600 14px system-ui,sans-serif';c.fillStyle=TH.ink;c.textAlign='left';c.fillText(S.box[b],bx+12,BY+20);
+  HEAP[b].forEach(h=>ball(h[0],h[1],TY[b],1));
+ });
+ parts.filter(p=>p!==drag).forEach(p=>ball(p.x,p.y,p.t,p.s==='o'?Math.max(0,p.a):1));
+ if(drag){c.shadowColor='rgba(0,0,0,.4)';c.shadowBlur=10;ball(drag.x,drag.y,drag.t,1);c.shadowBlur=0}
+ fx.forEach(f=>{c.globalAlpha=Math.min(1,f.l);c.fillStyle=f.col;c.fillRect(f.x,f.y,6,4)});c.globalAlpha=1;
+}
+function frame(t){
+ const dt=Math.min(.05,(t-last)/1000||0);last=t;if(++fc%30===0)readTheme();
+ update(dt);draw();requestAnimationFrame(frame);
+}
+readTheme();fit();newEx();applyLang();requestAnimationFrame(frame);
+</script></body></html>
