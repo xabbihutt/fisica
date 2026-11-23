@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tipos de enlace</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* VOICE everyday classroom tool, clear and calm
+   IDEA the wall periodic table plus Lewis dot diagrams drawn on the board
+   PICTURE a stage where valence electrons travel between atoms, then the notebook Lewis notation
+   COLOUR white ground, cobalt header band, blue and red electrons, tiles tinted metal / no metal / noble gas
+   TYPE Lexend throughout
+   LAYOUT table and choices left, stage and explanation right; stage first on narrow screens */
+:root{color-scheme:light;--bg:#ffffff;--ink:#141a22;--mut:#566170;--line:#dce2ea;--panel:#f5f7fb;--band:#1d3fae;--metal:#d4e4ff;--nm:#ffe0c7;--ng:#e8ddfc;--off:#f0f2f5;--ca:#1765d8;--cb:#d63a20;--ok:#11804f;--bad:#c62828;--acc:#1d3fae}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){color-scheme:dark;--bg:#0f141b;--ink:#e8edf4;--mut:#9aa7b7;--line:#2a3442;--panel:#151c26;--band:#13245e;--metal:#1f3a63;--nm:#4f2e1b;--ng:#36295a;--off:#19202a;--ca:#62a4ff;--cb:#ff7d5e;--ok:#4fd49a;--bad:#ff7a7a;--acc:#8fb0ff}}
+:root[data-theme=dark]{color-scheme:dark;--bg:#0f141b;--ink:#e8edf4;--mut:#9aa7b7;--line:#2a3442;--panel:#151c26;--band:#13245e;--metal:#1f3a63;--nm:#4f2e1b;--ng:#36295a;--off:#19202a;--ca:#62a4ff;--cb:#ff7d5e;--ok:#4fd49a;--bad:#ff7a7a;--acc:#8fb0ff}
+*{box-sizing:border-box;min-width:0}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:16px/1.55 Lexend,system-ui,sans-serif;overflow-x:clip}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+.top{background:var(--band);color:#fff;padding:18px max(4vw,16px) 0}
+.tt{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:4px 24px;max-width:1280px;margin:0 auto}
+h1{font-size:clamp(30px,5vw,46px);line-height:1.05;letter-spacing:-.02em;margin:0;font-weight:700}
+.aut{font-size:16px;opacity:.92}
+.bar2{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:8px;max-width:1280px;margin:14px auto 0}
+.modes{display:flex;gap:6px}
+.modes button{background:transparent;border:0;color:#fff;opacity:.8;padding:10px 18px;border-radius:10px 10px 0 0;font-weight:500;min-height:44px}
+.modes button.on{background:var(--bg);color:var(--ink);opacity:1}
+.langs{display:flex;gap:2px;padding-bottom:8px}
+.langs button{background:transparent;border:1px solid transparent;color:#fff;opacity:.75;border-radius:8px;padding:4px 10px;min-height:36px;font-size:15px;font-weight:600}
+.langs button.on{opacity:1;border-color:rgba(255,255,255,.7)}
+.wrap{display:grid;grid-template-columns:minmax(0,1fr);gap:22px;max-width:1280px;margin:0 auto;padding:20px max(4vw,16px) 40px}
+@media(min-width:980px){.wrap{grid-template-columns:minmax(0,480px) minmax(0,1fr)}}
+@media(max-width:979px){.wrap>section:last-child{order:-1}}
+.pt{display:grid;grid-template-columns:20px repeat(18,minmax(0,1fr));gap:2px;user-select:none}
+.pt .cell{aspect-ratio:1;display:grid;place-items:center;font-size:13px;border-radius:4px;background:var(--off);color:var(--mut);border:0;padding:0;letter-spacing:-.02em}
+.pt .gh,.pt .ph{font-size:12px;color:var(--mut);display:grid;place-items:center}
+.pt .e{font-weight:600;color:var(--ink)}
+.pt .m{background:var(--metal)}.pt .nm{background:var(--nm)}.pt .ng{background:var(--ng)}
+.pt .empty{background:transparent}
+.pt .selA{outline:3px solid var(--ca);outline-offset:-1px;z-index:1}
+.pt .selB{outline:3px solid var(--cb);outline-offset:-1px;z-index:1}
+.pt .hl{outline:3px solid var(--acc);outline-offset:-1px;z-index:1}
+.pt button.e:hover{filter:brightness(.93)}
+@media(max-width:420px){.pt .cell{font-size:11px}.pt{grid-template-columns:14px repeat(18,minmax(0,1fr))}}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:14px;color:var(--mut);margin:10px 0 18px}
+.legend i{display:inline-block;width:14px;height:14px;border-radius:3px;vertical-align:-2px;margin-right:6px}
+.chips{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.chip{border:2px solid var(--line);background:var(--bg);border-radius:12px;padding:8px 12px;text-align:left;min-height:56px}
+.chip small{display:block;color:var(--mut);font-size:13px}
+.chip b{font-size:20px}
+.chip.on.a{border-color:var(--ca)}.chip.on.b{border-color:var(--cb)}
+.hint{font-size:14px;color:var(--mut);margin:8px 0 16px}
+h3{font-size:17px;margin:0 0 8px}
+.ex{display:flex;flex-wrap:wrap;gap:6px}
+.ex button{border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:6px 12px;min-height:40px;font-size:15px}
+.ex button:hover{border-color:var(--acc)}
+.steps{display:flex;flex-wrap:wrap;gap:4px;list-style:none;padding:0;margin:0 0 10px}
+.steps button{border:0;background:var(--off);border-radius:8px;padding:6px 10px;font-size:14px;min-height:40px;color:var(--mut)}
+.steps button.on{background:var(--band);color:#fff}
+.steps button.done{color:var(--ink)}
+.stage{background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+#stage{display:block;width:100%;height:auto;aspect-ratio:640/420}
+.official{margin-top:10px;background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:10px 14px 6px;transition:opacity .6s}
+.official p{margin:0;font-size:14px;color:var(--mut);font-weight:500}
+#offsvg{display:block;width:100%;height:auto;margin:0 auto}
+.navb{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.btn{border:1px solid var(--line);background:var(--bg);border-radius:10px;padding:8px 16px;min-height:44px;font-weight:500}
+.btn.pri{background:var(--band);border-color:var(--band);color:#fff}
+.btn[disabled]{opacity:.4;cursor:default}
+.btn.tog.on{border-color:var(--acc);color:var(--acc)}
+.exp{font-size:16px;max-width:72ch}
+.exp p{margin:0 0 10px}
+.exp .note{color:var(--mut);font-size:15px}
+.core{color:var(--mut)}.val{font-weight:600;color:var(--acc)}
+.formula{font-size:clamp(36px,6vw,52px);font-weight:600;line-height:1.1;margin:4px 0}
+.fname{font-size:18px;margin:0 0 10px;color:var(--mut)}
+.exp ul{margin:4px 0 0;padding-left:20px}
+.tag{display:inline-block;border-radius:6px;padding:1px 8px;font-weight:600;color:#fff;background:var(--acc)}
+/* svg */
+svg text{font-family:Lexend,system-ui,sans-serif}
+.sym{font-size:20px;font-weight:600;text-anchor:middle;fill:var(--ink)}
+.osym{font-size:22px;font-weight:600;text-anchor:middle;fill:var(--ink)}
+.otx{font-size:20px;font-weight:500;fill:var(--ink)}
+.osm{font-size:15px;fill:var(--mut)}
+.c-m{fill:var(--metal);stroke:rgba(23,101,216,.4)}
+.c-nm{fill:var(--nm);stroke:rgba(214,58,32,.4)}
+.c-ng{fill:var(--ng);stroke:rgba(123,79,214,.5)}
+.ea{fill:var(--ca)}.eb{fill:var(--cb)}
+.hol{fill:none;stroke:var(--mut);stroke-dasharray:2 2}
+.chg{font-size:16px;font-weight:600;fill:var(--ink)}
+.cap{font-size:15px;fill:var(--mut);text-anchor:middle}
+.lab{font-size:15px;fill:var(--ink);text-anchor:middle}
+.big{font-size:40px;font-weight:700;text-anchor:middle;fill:var(--ink)}
+.brk{fill:none;stroke:var(--ink);stroke-width:2}
+.ring{fill:none;stroke:var(--line);stroke-width:1.5}
+.ring.v{stroke:var(--acc);stroke-width:2}
+.card{fill:var(--bg);stroke:var(--line);stroke-width:1.5}
+.bl{stroke:var(--ink);stroke-width:3;stroke-linecap:round}
+.curv{fill:none;stroke:var(--mut);stroke-width:1.6}
+.ahp{fill:var(--mut)}
+.ahi{fill:var(--ink)}
+.rarr{stroke:var(--ink);stroke-width:2}
+.bonds{opacity:0;transition:opacity .4s}
+#stage.lines .bonds{opacity:1}
+#stage.lines .bond{opacity:0}
+.e{transition:opacity .4s}
+.arw{stroke:var(--mut);stroke-width:2;fill:none}
+/* test */
+.tbar{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;font-weight:500;margin-bottom:10px}
+.prog{height:8px;background:var(--off);border-radius:4px;overflow:hidden;margin-bottom:16px}
+.prog i{display:block;height:100%;background:var(--acc);transition:width .3s}
+.qcard{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:clamp(16px,3vw,28px)}
+.qtype{font-size:14px;color:var(--mut);margin:0 0 4px}
+.qcard h2{font-size:clamp(20px,3vw,26px);line-height:1.25;margin:0 0 14px;font-weight:600}
+.qsvg{display:block;width:100%;max-width:560px;height:auto;margin:0 auto 12px}
+.opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px}
+.opts button{border:2px solid var(--line);background:var(--bg);border-radius:12px;padding:10px;min-height:52px;font-size:18px;font-weight:500}
+.opts button:hover:not([disabled]){border-color:var(--acc)}
+.opts button.ok{border-color:var(--ok);background:rgba(17,128,79,.14)}
+.opts button.ko{border-color:var(--bad);background:rgba(198,40,40,.12)}
+.opts button[disabled]{cursor:default}
+.fb{margin-top:14px;font-size:16px}
+.fb .r{font-weight:600}.fb .r.ok{color:var(--ok)}.fb .r.ko{color:var(--bad)}
+.slot{fill:transparent;stroke:var(--mut);stroke-dasharray:3 3;cursor:pointer}
+.slot.on{fill:var(--ca);stroke:var(--ca);stroke-dasharray:none}
+.final{text-align:center;padding:20px 0}
+.final .formula{color:var(--acc)}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="tt"><h1 data-k="title">Tipos de enlace</h1><div class="aut" data-k="author">por Xabier Díaz "Xabbihutt"</div></div>
+  <div class="bar2">
+    <nav class="modes"><button id="mDemo" class="on" data-k="demo">Demostración</button><button id="mTest" data-k="test">Test</button></nav>
+    <div class="langs" id="langs"><button data-l="es">ES</button><button data-l="gl">GL</button><button data-l="en">EN</button></div>
+  </div>
+</header>
+<main class="wrap">
+  <section>
+    <div class="pt" id="pt"></div>
+    <div class="legend"><span><i style="background:var(--metal)"></i><span data-k="lMetal"></span></span><span><i style="background:var(--nm)"></i><span data-k="lNm"></span></span><span><i style="background:var(--ng)"></i><span data-k="lNg"></span></span><span data-k="lGrey"></span></div>
+    <div id="demoSide">
+      <div class="chips"><button class="chip a on" id="chipA"><small data-k="atom1"></small><b id="symA"></b> <span id="nameA"></span></button><button class="chip b" id="chipB"><small data-k="atom2"></small><b id="symB"></b> <span id="nameB"></span></button></div>
+      <p class="hint" data-k="hint"></p>
+      <h3 data-k="examples"></h3>
+      <div class="ex" id="ex"></div>
+    </div>
+    <div id="testSide" hidden>
+      <h3 data-k="howTitle"></h3>
+      <p class="hint" data-k="howText"></p>
+    </div>
+  </section>
+  <section>
+    <div id="demo">
+      <ol class="steps" id="steps"></ol>
+      <div class="stage"><svg id="stage" viewBox="0 0 640 420" role="img"></svg></div>
+      <div class="navb">
+        <button class="btn" id="prev" data-k="prev"></button>
+        <button class="btn pri" id="next" data-k="next"></button>
+        <button class="btn" id="replay" data-k="replay"></button>
+        <button class="btn tog" id="rayas"></button>
+      </div>
+      <div class="exp" id="exp"></div>
+    </div>
+    <div id="test" hidden>
+      <div class="tbar"><span id="tProg"></span><span id="tScore"></span></div>
+      <div class="prog"><i id="tBar"></i></div>
+      <div class="qcard" id="qcard"></div>
+    </div>
+  </section>
+</main>
+<script>
+{
+const $=s=>document.querySelector(s);
+const SYM="H He Li Be B C N O F Ne Na Mg Al Si P S Cl Ar K Ca Sc Ti V Cr Mn Fe Co Ni Cu Zn Ga Ge As Se Br Kr Rb Sr Y Zr Nb Mo Tc Ru Rh Pd Ag Cd In Sn Sb Te I Xe".split(' ');
+/* symbol: [type, electronegativity, core, valence] */
+const D={H:['nm',2.20,'','1s¹'],He:['ng',0,'','1s²'],Li:['m',0.98,'[He]','2s¹'],C:['nm',2.55,'[He]','2s² 2p²'],N:['nm',3.04,'[He]','2s² 2p³'],
+O:['nm',3.44,'[He]','2s² 2p⁴'],F:['nm',3.98,'[He]','2s² 2p⁵'],Ne:['ng',0,'[He]','2s² 2p⁶'],Na:['m',0.93,'[Ne]','3s¹'],Mg:['m',1.31,'[Ne]','3s²'],
+Al:['m',1.61,'[Ne]','3s² 3p¹'],P:['nm',2.19,'[Ne]','3s² 3p³'],S:['nm',2.58,'[Ne]','3s² 3p⁴'],Cl:['nm',3.16,'[Ne]','3s² 3p⁵'],Ar:['ng',0,'[Ne]','3s² 3p⁶'],
+K:['m',0.82,'[Ar]','4s¹'],Ca:['m',1.00,'[Ar]','4s²'],Fe:['m',1.83,'[Ar] 3d⁶','4s²'],Cu:['m',1.90,'[Ar] 3d¹⁰','4s¹'],Zn:['m',1.65,'[Ar] 3d¹⁰','4s²'],
+Br:['nm',2.96,'[Ar] 3d¹⁰','4s² 4p⁵'],Ag:['m',1.93,'[Kr] 4d¹⁰','5s¹'],I:['nm',2.66,'[Kr] 4d¹⁰','5s² 5p⁵']};
+const NAMES={
+es:{H:'hidrógeno',He:'helio',Li:'litio',C:'carbono',N:'nitrógeno',O:'oxígeno',F:'flúor',Ne:'neón',Na:'sodio',Mg:'magnesio',Al:'aluminio',P:'fósforo',S:'azufre',Cl:'cloro',Ar:'argón',K:'potasio',Ca:'calcio',Fe:'hierro',Cu:'cobre',Zn:'cinc',Br:'bromo',Ag:'plata',I:'yodo'},
+gl:{H:'hidróxeno',He:'helio',Li:'litio',C:'carbono',N:'nitróxeno',O:'osíxeno',F:'flúor',Ne:'neon',Na:'sodio',Mg:'magnesio',Al:'aluminio',P:'fósforo',S:'xofre',Cl:'cloro',Ar:'argon',K:'potasio',Ca:'calcio',Fe:'ferro',Cu:'cobre',Zn:'cinc',Br:'bromo',Ag:'prata',I:'iodo'},
+en:{H:'hydrogen',He:'helium',Li:'lithium',C:'carbon',N:'nitrogen',O:'oxygen',F:'fluorine',Ne:'neon',Na:'sodium',Mg:'magnesium',Al:'aluminium',P:'phosphorus',S:'sulfur',Cl:'chlorine',Ar:'argon',K:'potassium',Ca:'calcium',Fe:'iron',Cu:'copper',Zn:'zinc',Br:'bromine',Ag:'silver',I:'iodine'}};
+const ANION={es:{H:'hidruro',N:'nitruro',O:'óxido',F:'fluoruro',P:'fosfuro',S:'sulfuro',Cl:'cloruro',Br:'bromuro',I:'yoduro'},
+gl:{H:'hidruro',N:'nitruro',O:'óxido',F:'fluoruro',P:'fosfuro',S:'sulfuro',Cl:'cloruro',Br:'bromuro',I:'ioduro'},
+en:{H:'hydride',N:'nitride',O:'oxide',F:'fluoride',P:'phosphide',S:'sulfide',Cl:'chloride',Br:'bromide',I:'iodide'}};
+const MOL={'H₂O':['agua','auga','water'],'NH₃':['amoniaco','amoníaco','ammonia'],'CH₄':['metano','metano','methane'],'CO₂':['dióxido de carbono','dióxido de carbono','carbon dioxide'],
+'CS₂':['disulfuro de carbono','disulfuro de carbono','carbon disulfide'],'HCl':['cloruro de hidrógeno','cloruro de hidróxeno','hydrogen chloride'],'HF':['fluoruro de hidrógeno','fluoruro de hidróxeno','hydrogen fluoride'],
+'HBr':['bromuro de hidrógeno','bromuro de hidróxeno','hydrogen bromide'],'HI':['yoduro de hidrógeno','ioduro de hidróxeno','hydrogen iodide'],'H₂S':['sulfuro de hidrógeno','sulfuro de hidróxeno','hydrogen sulfide'],
+'PH₃':['fosfano','fosfano','phosphane'],'CCl₄':['tetracloruro de carbono','tetracloruro de carbono','carbon tetrachloride'],'CF₄':['tetrafluoruro de carbono','tetrafluoruro de carbono','carbon tetrafluoride'],
+'H₂':['dihidrógeno','dihidróxeno','dihydrogen'],'O₂':['dioxígeno','diosíxeno','dioxygen'],'N₂':['dinitrógeno','dinitróxeno','dinitrogen'],'Cl₂':['dicloro','dicloro','dichlorine'],
+'F₂':['diflúor','diflúor','difluorine'],'Br₂':['dibromo','dibromo','dibromine'],'I₂':['diyodo','diiodo','diiodine'],'PCl₃':['tricloruro de fósforo','tricloruro de fósforo','phosphorus trichloride'],
+'NCl₃':['tricloruro de nitrógeno','tricloruro de nitróxeno','nitrogen trichloride'],'NF₃':['trifluoruro de nitrógeno','trifluoruro de nitróxeno','nitrogen trifluoride'],
+'OF₂':['difluoruro de oxígeno','difluoruro de osíxeno','oxygen difluoride'],'Cl₂O':['óxido de dicloro','óxido de dicloro','dichlorine oxide'],'SCl₂':['dicloruro de azufre','dicloruro de xofre','sulfur dichloride'],
+'ClF':['fluoruro de cloro','fluoruro de cloro','chlorine fluoride'],'BrCl':['cloruro de bromo','cloruro de bromo','bromine chloride'],'ICl':['cloruro de yodo','cloruro de iodo','iodine chloride']};
+const LI={es:0,gl:1,en:2};
+
+/* ---------- texts ---------- */
+const TX={
+es:{title:'Tipos de enlace',author:'por Xabier Díaz "Xabbihutt"',demo:'Demostración',test:'Test',lMetal:'Metal',lNm:'No metal',lNg:'Gas noble',lGrey:'En gris: elementos no usados aquí',
+ atom1:'Átomo 1',atom2:'Átomo 2',hint:'Pulsa un elemento de la tabla para colocarlo en la casilla marcada. Puedes elegir el mismo elemento dos veces.',examples:'Ejemplos',
+ howTitle:'Cómo funciona el test',howText:'10 preguntas al azar: electrones de valencia, configuración electrónica, estructura de Lewis, tipo de enlace y fórmula. Tras cada respuesta verás la explicación y podrás abrir el caso en la demostración.',
+ prev:'◀ Anterior',next:'Siguiente ▶',replay:'Repetir animación',linesOn:'Ver pares como puntos',linesOff:'Ver pares como rayas',
+ steps:['Posición','Configuración','Lewis','Tendencia','Enlace','Fórmula'],tname:{ionico:'iónico',covalente:'covalente',metalico:'metálico',ninguno:'sin enlace'},
+ kn:['','simple','doble','triple'],knp:['','simples','dobles','triples'],and:' y ',
+ group:(g,p)=>`Grupo ${g} · Periodo ${p}`,sameEl:'Dos átomos del mismo elemento',findEl:'Localiza cada elemento en la tabla periódica',
+ veShell:(v,p)=>`${v} e⁻ de valencia (capa n = ${p})`,dots:n=>`${n} punto${n>1?'s':''}`,
+ tNg:['capa completa','no gana ni pierde e⁻'],tTr:s=>s=='Fe'?'pierde 2 o 3 e⁻':'pierde 1 o 2 e⁻',tM:v=>`pierde ${v} e⁻`,tNm:n=>`le falta${n>1?'n':''} ${n} e⁻`,tNm2:ion=>`gana (${ion}) o comparte`,
+ enTitle:'Electronegatividad (Pauling)',enNg:'— (gas noble)',
+ capIon:'los iones de carga opuesta se atraen',capMet:'cationes fijos en una red + mar de electrones que se mueven libremente',capNone:'última capa completa: no hay enlace',
+ capSpI:'enlace iónico (caso especial, ver explicación)',capSpC:'enlace covalente (caso especial, ver explicación)',
+ capCov:(n,k,lc,ll,C,L,same)=>`${n} enlace${n>1?'s':''} ${n>1?TX.es.knp[k]:TX.es.kn[k]} · pares libres: ${same?lc+' en cada átomo':lc+' en '+C+', '+ll+' en cada '+L}`,
+ toSea:'al mar de electrones',
+ s0h:'1. Posición en la tabla periódica',s0p:(e,n)=>`<b>${e.s}</b> (${n}, Z = ${e.z}) está en el <b>grupo ${e.g}</b> y el <b>periodo ${e.p}</b>.`,
+ kM:tr=>`Es un <b>metal</b>${tr?' de transición':''}.`,kNm:'Es un <b>no metal</b>.',kNg:'Es un <b>gas noble</b>.',
+ s0n:'El periodo indica la capa de valencia (n = nº de periodo). El grupo nos dirá cuántos electrones hay en esa capa.',
+ s1h:'2. Configuración electrónica reducida',s1v:v=>`${v} electr${v>1?'ones':'ón'} de valencia`,
+ s1n:'Entre corchetes va el gas noble anterior: resume las capas internas. Regla rápida: grupos 1 y 2 → e⁻ de valencia = nº de grupo; grupos 13 a 18 → nº de grupo − 10 (el He tiene 2).',
+ s1tr:' En los metales de transición los electrones d quedan por dentro: contamos solo los ns.',
+ s2h:'3. Estructura de Lewis',s2p:'Se escribe el símbolo y, alrededor, <b>un punto por cada electrón de valencia</b>: primero uno en cada lado y después se van emparejando.',
+ s2n:'Cada átomo tiene un color para poder seguir sus electrones en la animación. A la izquierda se coloca siempre el elemento menos electronegativo, el que va primero en la fórmula.',
+ s3h:'4. ¿Qué quiere hacer cada átomo?',s3oct:'<b>Regla del octeto:</b> los átomos tienden a quedarse con 8 electrones en la última capa, como los gases nobles (el H, con 2, como el He).',
+ s3ng:e=>`<b>${e.s}</b> ya tiene ${e.ve} e⁻ en la última capa: es estable y no necesita enlazarse.`,
+ s3tr:e=>`<b>${e.s}</b> es un metal: tiende a perder electrones, pero puede perder ${e.s=='Fe'?'2 o 3 (Fe²⁺ / Fe³⁺)':'1 o 2 (Cu⁺ / Cu²⁺)'}.`,
+ s3m:(e,ion)=>`<b>${e.s}</b> es un metal: le cuesta poco <b>perder</b> sus ${e.ve} e⁻ de valencia y quedar como catión <b>${ion}</b>.`,
+ s3nm:(e,n,ion)=>`<b>${e.s}</b> es un no metal: le falta${n>1?'n':''} ${n} e⁻ para ${e.s=='H'?'tener 2 (como el He)':'completar el octeto'}. Los consigue <b>ganándolos</b> (anión ${ion}) o <b>compartiéndolos</b>.`,
+ s3en:d=>`Diferencia de electronegatividad: ${d}. Orientativamente, si es grande (más de 1,7) el enlace es iónico; si es pequeña entre no metales, covalente.`,
+ s4h:'5. Tipo de enlace:',s4ion:'<b>Metal + no metal → enlace iónico.</b>',
+ s4ionD:(M,X,mi,xi,qM,qX,nM,nX,m,x)=>`El ${m} <b>cede</b> electrones al ${x}: se forman cationes <b>${mi}</b> y aniones <b>${xi}</b>, que se atraen por tener cargas opuestas.</p><p>Cada ${M} cede ${qM} e⁻ y cada ${X} acepta ${qX}: por eso hacen falta <b>${nM} ${M}</b> por cada <b>${nX} ${X}</b>. No se forman moléculas: los iones se ordenan en una red cristalina.`,
+ spTr:(n,ions)=>`El ${n} es un metal de transición que puede formar iones de distinta carga (${ions}), así que su fórmula no se deduce solo con la regla del octeto. Hace falta saber con qué carga actúa.`,
+ spC:'El carbono casi nunca forma iones: con los metales da carburos, que no se estudian en 4º ESO.',
+ s4cov:'<b>No metal + no metal → enlace covalente.</b> Ninguno cede electrones con facilidad, así que los <b>comparten</b>. Cada par de electrones compartido es un enlace: simple (1 par), doble (2) o triple (3).',
+ s4same:(s,k,kn,h)=>`Cada ${s} necesita ${k} e⁻ más y pone ${k} en común con el otro: <b>enlace ${kn}</b>. Así los dos completan ${h?'su capa (2 e⁻)':'el octeto'}.`,
+ s4cd:(cn,need,ln,k,n,L,kn)=>`El ${cn} necesita ${need} e⁻ y cada ${ln} puede compartir ${k}: se une a <b>${n} ${L}</b> con ${n>1?'enlaces':'un enlace'} <b>${kn}</b>. Los pares que no se comparten son <b>pares libres</b>.`,
+ s4geo:'La estructura de Lewis no indica la forma real de la molécula (por ejemplo, el H₂O es angular).',
+ spCov:ex=>`Los dos son no metales, así que el enlace es covalente. Pero sus compuestos reales (por ejemplo ${ex||'los de este par'}) tienen enlaces que no se explican con la regla del octeto sencilla de 4º ESO.`,
+ same:{C:'Los átomos de carbono se unen entre sí formando redes covalentes gigantes: el diamante y el grafito. Cada C forma 4 enlaces covalentes con otros C.',P:'El fósforo blanco forma moléculas P₄: cada P se une a otros 3 P con enlaces simples y le queda un par libre.',S:'El azufre forma anillos S₈: cada S se une a otros 2 S con enlaces simples y le quedan dos pares libres.'},
+ diamond:'C (diamante)',
+ s4met:'<b>Metal + metal → enlace metálico.</b> Cada átomo suelta sus electrones de valencia y queda como catión. Esos electrones forman un <b>mar (o nube) de electrones</b> que se mueve libremente entre los cationes y los mantiene unidos.',
+ s4alloy:b=>`Al mezclar metales distintos se obtiene una <b>aleación</b>${b?' (cobre + cinc = latón)':''}.`,
+ s4none:(n,v)=>`<b>No se forma enlace.</b> El ${n} es un gas noble: ya tiene la última capa completa (${v} e⁻), así que no gana, no pierde y no comparte electrones.`,
+ s4offI:'Al terminar la animación, cada electrón cedido queda marcado con una flecha desde su posición en el metal hasta su sitio en el no metal.',
+ s4offC:'Al terminar la animación, cada par compartido se sustituye por una raya (enlace). Con el botón puedes volver a ver los puntos.',
+ s5h:'6. Fórmula y propiedades',s5none:'Los gases nobles se representan como átomos sueltos (gases monoatómicos).',
+ alloy:'aleación',metName:n=>n+' metálico',s5alloy:'Una aleación no tiene fórmula fija: la proporción de cada metal puede variar.',s5met:'Se escribe solo el símbolo: no hay moléculas, sino una red de cationes rodeada de electrones.',
+ s5ion:(sum,f)=>`La carga total debe ser cero: ${sum} = 0 → <b>${f}</b>. Truco: las cargas se cruzan como subíndices y se simplifican. En la fórmula se escribe primero el metal.`,
+ s5cov:list=>`Es una <b>molécula</b> de ${list}. En la fórmula se escribe primero el elemento menos electronegativo.`,
+ props:{ionico:['Sólidos cristalinos a temperatura ambiente','Puntos de fusión y ebullición altos','Muchos se disuelven en agua','Conducen la electricidad fundidos o disueltos, pero no en estado sólido','Duros pero frágiles'],
+  covalente:['Formados por moléculas','Gases, líquidos o sólidos blandos a temperatura ambiente','Puntos de fusión y ebullición bajos','No conducen la electricidad'],
+  red:['Sólidos muy duros (diamante)','Puntos de fusión muy altos','Insolubles en agua','No conducen la electricidad (salvo el grafito)'],
+  metalico:['Sólidos a temperatura ambiente (salvo el mercurio)','Buenos conductores del calor y de la electricidad','Brillo metálico','Dúctiles (hilos) y maleables (láminas)'],
+  ninguno:['Gases formados por átomos sueltos','Muy poco reactivos']},
+ ionName:(m,x)=>`${x} de ${m}`,
+ qt:{ve:'Electrones de valencia',cfg:'Configuración electrónica',lewis:'Estructura de Lewis',tipo:'Tipo de enlace',formula:'Fórmula'},
+ tOpts:{ionico:'Iónico',covalente:'Covalente',metalico:'Metálico',ninguno:'No se enlazan'},
+ qProg:(i,n)=>`Pregunta ${i} de ${n}`,qScore:s=>`Aciertos: ${s}`,check:'Comprobar',clear:'Borrar',nextQ:'Siguiente pregunta ▶',seeRes:'Ver resultado',seeDemo:'Verlo en la demostración',
+ right:'¡Correcto!',wrong:'No es correcto.',answerIs:a=>`La respuesta es <b>${a}</b>.`,placed:v=>`Has puesto ${v} e⁻.`,finished:'Test terminado',result:'Resultado',newTest:'Nuevo test',
+ endMsg:['¡Perfecto!','¡Muy bien!','Bien, pero repasa los fallos en la demostración.','Repasa la demostración paso a paso y vuelve a intentarlo.'],
+ qVe:e=>`El elemento <b>${e.s}</b> está en el grupo ${e.g} y el periodo ${e.p}. ¿Cuántos electrones de valencia tiene?`,
+ wVe:(e,c)=>`${e.s}: ${c} → ${e.ve} e⁻ de valencia.${e.g>=13?' Grupo '+e.g+' − 10 = '+e.ve+'.':''}`,
+ qCfg:(e,n)=>`¿Cuál es la configuración electrónica reducida del <b>${n} (${e.s})</b>, grupo ${e.g}, periodo ${e.p}?`,
+ wCfg:(e,core)=>`El gas noble anterior es ${core||'— (no hay)'} y la capa de valencia es n = ${e.p}, con ${e.ve} e⁻: ${e.val}.`,
+ qLew:e=>`Dibuja la estructura de Lewis del <b>${e.s}</b> (grupo ${e.g}, periodo ${e.p}): pulsa los huecos para poner o quitar electrones.`,
+ wLew:(e,d)=>`${e.s} tiene ${e.ve} e⁻ de valencia (${e.val}), así que lleva ${d}.`,
+ qTipo:(a,b)=>a==b?`¿Qué tipo de enlace une los átomos de <b>${a}</b> entre sí?`:`¿Qué tipo de enlace se forma entre <b>${a}</b> y <b>${b}</b>?`,
+ wTipo:{ionico:'Metal + no metal: el metal cede electrones y se forman iones.',covalente:'No metal + no metal: comparten electrones.',metalico:'Metal + metal: mar de electrones entre cationes.',ninguno:'Un gas noble ya tiene la última capa completa.'},
+ qF:(a,b)=>`¿Cuál es la fórmula del compuesto que forman <b>${a}</b> y <b>${b}</b>?`,
+ wFi:(mi,xi,f,n)=>`${mi} y ${xi}: carga total 0 → ${f} (${n}).`,wFc:(C,need,L,k,f,n)=>`${C} necesita ${need} e⁻ y cada ${L} comparte ${k}: ${f}${n?' ('+n+')':''}.`},
+gl:{title:'Tipos de enlace',author:'por Xabier Díaz "Xabbihutt"',demo:'Demostración',test:'Test',lMetal:'Metal',lNm:'Non metal',lNg:'Gas nobre',lGrey:'En gris: elementos non usados aquí',
+ atom1:'Átomo 1',atom2:'Átomo 2',hint:'Preme un elemento da táboa para colocalo na casa marcada. Podes escoller o mesmo elemento dúas veces.',examples:'Exemplos',
+ howTitle:'Como funciona o test',howText:'10 preguntas ao chou: electróns de valencia, configuración electrónica, estrutura de Lewis, tipo de enlace e fórmula. Despois de cada resposta verás a explicación e poderás abrir o caso na demostración.',
+ prev:'◀ Anterior',next:'Seguinte ▶',replay:'Repetir animación',linesOn:'Ver pares como puntos',linesOff:'Ver pares como trazos',
+ steps:['Posición','Configuración','Lewis','Tendencia','Enlace','Fórmula'],tname:{ionico:'iónico',covalente:'covalente',metalico:'metálico',ninguno:'sen enlace'},
+ kn:['','simple','dobre','triplo'],knp:['','simples','dobres','triplos'],and:' e ',
+ group:(g,p)=>`Grupo ${g} · Período ${p}`,sameEl:'Dous átomos do mesmo elemento',findEl:'Localiza cada elemento na táboa periódica',
+ veShell:(v,p)=>`${v} e⁻ de valencia (capa n = ${p})`,dots:n=>`${n} punto${n>1?'s':''}`,
+ tNg:['capa completa','non gaña nin perde e⁻'],tTr:s=>s=='Fe'?'perde 2 ou 3 e⁻':'perde 1 ou 2 e⁻',tM:v=>`perde ${v} e⁻`,tNm:n=>`${n>1?'fáltanlle':'fáltalle'} ${n} e⁻`,tNm2:ion=>`gaña (${ion}) ou comparte`,
+ enTitle:'Electronegatividade (Pauling)',enNg:'— (gas nobre)',
+ capIon:'os ións de carga oposta atráense',capMet:'catións fixos nunha rede + mar de electróns que se moven libremente',capNone:'última capa completa: non hai enlace',
+ capSpI:'enlace iónico (caso especial, ver explicación)',capSpC:'enlace covalente (caso especial, ver explicación)',
+ capCov:(n,k,lc,ll,C,L,same)=>`${n} enlace${n>1?'s':''} ${n>1?TX.gl.knp[k]:TX.gl.kn[k]} · pares libres: ${same?lc+' en cada átomo':lc+' no '+C+', '+ll+' en cada '+L}`,
+ toSea:'ao mar de electróns',
+ s0h:'1. Posición na táboa periódica',s0p:(e,n)=>`<b>${e.s}</b> (${n}, Z = ${e.z}) está no <b>grupo ${e.g}</b> e no <b>período ${e.p}</b>.`,
+ kM:tr=>`É un <b>metal</b>${tr?' de transición':''}.`,kNm:'É un <b>non metal</b>.',kNg:'É un <b>gas nobre</b>.',
+ s0n:'O período indica a capa de valencia (n = nº de período). O grupo dinos cantos electróns hai nesa capa.',
+ s1h:'2. Configuración electrónica abreviada',s1v:v=>`${v} electr${v>1?'óns':'ón'} de valencia`,
+ s1n:'Entre corchetes vai o gas nobre anterior: resume as capas internas. Regra rápida: grupos 1 e 2 → e⁻ de valencia = nº de grupo; grupos 13 a 18 → nº de grupo − 10 (o He ten 2).',
+ s1tr:' Nos metais de transición os electróns d quedan por dentro: contamos só os ns.',
+ s2h:'3. Estrutura de Lewis',s2p:'Escríbese o símbolo e, arredor, <b>un punto por cada electrón de valencia</b>: primeiro un en cada lado e despois vanse emparellando.',
+ s2n:'Cada átomo ten unha cor para poder seguir os seus electróns na animación. Á esquerda colócase sempre o elemento menos electronegativo, o que vai primeiro na fórmula.',
+ s3h:'4. Que quere facer cada átomo?',s3oct:'<b>Regra do octeto:</b> os átomos tenden a quedar con 8 electróns na última capa, coma os gases nobres (o H, con 2, coma o He).',
+ s3ng:e=>`<b>${e.s}</b> xa ten ${e.ve} e⁻ na última capa: é estable e non necesita enlazarse.`,
+ s3tr:e=>`<b>${e.s}</b> é un metal: tende a perder electróns, pero pode perder ${e.s=='Fe'?'2 ou 3 (Fe²⁺ / Fe³⁺)':'1 ou 2 (Cu⁺ / Cu²⁺)'}.`,
+ s3m:(e,ion)=>`<b>${e.s}</b> é un metal: cústalle pouco <b>perder</b> os seus ${e.ve} e⁻ de valencia e quedar como catión <b>${ion}</b>.`,
+ s3nm:(e,n,ion)=>`<b>${e.s}</b> é un non metal: ${n>1?'fáltanlle':'fáltalle'} ${n} e⁻ para ${e.s=='H'?'ter 2 (coma o He)':'completar o octeto'}. Conségueos <b>gañándoos</b> (anión ${ion}) ou <b>compartíndoos</b>.`,
+ s3en:d=>`Diferenza de electronegatividade: ${d}. Orientativamente, se é grande (máis de 1,7) o enlace é iónico; se é pequena entre non metais, covalente.`,
+ s4h:'5. Tipo de enlace:',s4ion:'<b>Metal + non metal → enlace iónico.</b>',
+ s4ionD:(M,X,mi,xi,qM,qX,nM,nX,m,x)=>`O ${m} <b>cede</b> electróns ao ${x}: fórmanse catións <b>${mi}</b> e anións <b>${xi}</b>, que se atraen por teren cargas opostas.</p><p>Cada ${M} cede ${qM} e⁻ e cada ${X} acepta ${qX}: por iso fan falta <b>${nM} ${M}</b> por cada <b>${nX} ${X}</b>. Non se forman moléculas: os ións ordénanse nunha rede cristalina.`,
+ spTr:(n,ions)=>`O ${n} é un metal de transición que pode formar ións de distinta carga (${ions}), así que a súa fórmula non se deduce só coa regra do octeto. Cómpre saber con que carga actúa.`,
+ spC:'O carbono case nunca forma ións: cos metais dá carburos, que non se estudan en 4º ESO.',
+ s4cov:'<b>Non metal + non metal → enlace covalente.</b> Ningún cede electróns con facilidade, así que os <b>comparten</b>. Cada par de electróns compartido é un enlace: simple (1 par), dobre (2) ou triplo (3).',
+ s4same:(s,k,kn,h)=>`Cada ${s} necesita ${k} e⁻ máis e pon ${k} en común co outro: <b>enlace ${kn}</b>. Así os dous completan ${h?'a súa capa (2 e⁻)':'o octeto'}.`,
+ s4cd:(cn,need,ln,k,n,L,kn)=>`O ${cn} necesita ${need} e⁻ e cada ${ln} pode compartir ${k}: únese a <b>${n} ${L}</b> con ${n>1?'enlaces':'un enlace'} <b>${kn}</b>. Os pares que non se comparten son <b>pares libres</b>.`,
+ s4geo:'A estrutura de Lewis non indica a forma real da molécula (por exemplo, a H₂O é angular).',
+ spCov:ex=>`Os dous son non metais, así que o enlace é covalente. Pero os seus compostos reais (por exemplo ${ex||'os deste par'}) teñen enlaces que non se explican coa regra do octeto sinxela de 4º ESO.`,
+ same:{C:'Os átomos de carbono únense entre si formando redes covalentes xigantes: o diamante e o grafito. Cada C forma 4 enlaces covalentes con outros C.',P:'O fósforo branco forma moléculas P₄: cada P únese a outros 3 P con enlaces simples e quédalle un par libre.',S:'O xofre forma aneis S₈: cada S únese a outros 2 S con enlaces simples e quédanlle dous pares libres.'},
+ diamond:'C (diamante)',
+ s4met:'<b>Metal + metal → enlace metálico.</b> Cada átomo solta os seus electróns de valencia e queda como catión. Eses electróns forman un <b>mar (ou nube) de electróns</b> que se move libremente entre os catións e os mantén unidos.',
+ s4alloy:b=>`Ao mesturar metais distintos obtense unha <b>aliaxe</b>${b?' (cobre + cinc = latón)':''}.`,
+ s4none:(n,v)=>`<b>Non se forma enlace.</b> O ${n} é un gas nobre: xa ten a última capa completa (${v} e⁻), así que non gaña, non perde e non comparte electróns.`,
+ s4offI:'Ao rematar a animación, cada electrón cedido queda marcado cunha frecha dende a súa posición no metal ata o seu sitio no non metal.',
+ s4offC:'Ao rematar a animación, cada par compartido substitúese por un trazo (enlace). Co botón podes volver ver os puntos.',
+ s5h:'6. Fórmula e propiedades',s5none:'Os gases nobres represéntanse como átomos soltos (gases monoatómicos).',
+ alloy:'aliaxe',metName:n=>n+' metálico',s5alloy:'Unha aliaxe non ten fórmula fixa: a proporción de cada metal pode variar.',s5met:'Escríbese só o símbolo: non hai moléculas, senón unha rede de catións rodeada de electróns.',
+ s5ion:(sum,f)=>`A carga total debe ser cero: ${sum} = 0 → <b>${f}</b>. Truco: as cargas crúzanse como subíndices e simplifícanse. Na fórmula escríbese primeiro o metal.`,
+ s5cov:list=>`É unha <b>molécula</b> de ${list}. Na fórmula escríbese primeiro o elemento menos electronegativo.`,
+ props:{ionico:['Sólidos cristalinos a temperatura ambiente','Puntos de fusión e ebulición altos','Moitos disólvense en auga','Conducen a electricidade fundidos ou disoltos, pero non en estado sólido','Duros pero fráxiles'],
+  covalente:['Formados por moléculas','Gases, líquidos ou sólidos brandos a temperatura ambiente','Puntos de fusión e ebulición baixos','Non conducen a electricidade'],
+  red:['Sólidos moi duros (diamante)','Puntos de fusión moi altos','Insolubles en auga','Non conducen a electricidade (agás o grafito)'],
+  metalico:['Sólidos a temperatura ambiente (agás o mercurio)','Bos condutores da calor e da electricidade','Brillo metálico','Dúctiles (fíos) e maleables (láminas)'],
+  ninguno:['Gases formados por átomos soltos','Moi pouco reactivos']},
+ ionName:(m,x)=>`${x} de ${m}`,
+ qt:{ve:'Electróns de valencia',cfg:'Configuración electrónica',lewis:'Estrutura de Lewis',tipo:'Tipo de enlace',formula:'Fórmula'},
+ tOpts:{ionico:'Iónico',covalente:'Covalente',metalico:'Metálico',ninguno:'Non se enlazan'},
+ qProg:(i,n)=>`Pregunta ${i} de ${n}`,qScore:s=>`Acertos: ${s}`,check:'Comprobar',clear:'Borrar',nextQ:'Seguinte pregunta ▶',seeRes:'Ver resultado',seeDemo:'Velo na demostración',
+ right:'Correcto!',wrong:'Non é correcto.',answerIs:a=>`A resposta é <b>${a}</b>.`,placed:v=>`Puxeches ${v} e⁻.`,finished:'Test rematado',result:'Resultado',newTest:'Novo test',
+ endMsg:['Perfecto!','Moi ben!','Ben, pero repasa os fallos na demostración.','Repasa a demostración paso a paso e volve intentalo.'],
+ qVe:e=>`O elemento <b>${e.s}</b> está no grupo ${e.g} e no período ${e.p}. Cantos electróns de valencia ten?`,
+ wVe:(e,c)=>`${e.s}: ${c} → ${e.ve} e⁻ de valencia.${e.g>=13?' Grupo '+e.g+' − 10 = '+e.ve+'.':''}`,
+ qCfg:(e,n)=>`Cal é a configuración electrónica abreviada do <b>${n} (${e.s})</b>, grupo ${e.g}, período ${e.p}?`,
+ wCfg:(e,core)=>`O gas nobre anterior é ${core||'— (non hai)'} e a capa de valencia é n = ${e.p}, con ${e.ve} e⁻: ${e.val}.`,
+ qLew:e=>`Debuxa a estrutura de Lewis do <b>${e.s}</b> (grupo ${e.g}, período ${e.p}): preme os ocos para poñer ou quitar electróns.`,
+ wLew:(e,d)=>`${e.s} ten ${e.ve} e⁻ de valencia (${e.val}), así que leva ${d}.`,
+ qTipo:(a,b)=>a==b?`Que tipo de enlace une os átomos de <b>${a}</b> entre si?`:`Que tipo de enlace se forma entre <b>${a}</b> e <b>${b}</b>?`,
+ wTipo:{ionico:'Metal + non metal: o metal cede electróns e fórmanse ións.',covalente:'Non metal + non metal: comparten electróns.',metalico:'Metal + metal: mar de electróns entre catións.',ninguno:'Un gas nobre xa ten a última capa completa.'},
+ qF:(a,b)=>`Cal é a fórmula do composto que forman <b>${a}</b> e <b>${b}</b>?`,
+ wFi:(mi,xi,f,n)=>`${mi} e ${xi}: carga total 0 → ${f} (${n}).`,wFc:(C,need,L,k,f,n)=>`${C} necesita ${need} e⁻ e cada ${L} comparte ${k}: ${f}${n?' ('+n+')':''}.`},
+en:{title:'Types of chemical bond',author:'by Xabier Díaz "Xabbihutt"',demo:'Demo',test:'Quiz',lMetal:'Metal',lNm:'Non-metal',lNg:'Noble gas',lGrey:'Grey: elements not used here',
+ atom1:'Atom 1',atom2:'Atom 2',hint:'Click an element in the table to place it in the highlighted box. You can choose the same element twice.',examples:'Examples',
+ howTitle:'How the quiz works',howText:'10 random questions: valence electrons, electron configuration, Lewis structure, type of bond and formula. After each answer you will see the explanation and can open the case in the demo.',
+ prev:'◀ Back',next:'Next ▶',replay:'Replay animation',linesOn:'Show pairs as dots',linesOff:'Show pairs as lines',
+ steps:['Position','Configuration','Lewis','Tendency','Bond','Formula'],tname:{ionico:'ionic',covalente:'covalent',metalico:'metallic',ninguno:'no bond'},
+ kn:['','single','double','triple'],knp:['','single','double','triple'],and:' and ',
+ group:(g,p)=>`Group ${g} · Period ${p}`,sameEl:'Two atoms of the same element',findEl:'Find each element in the periodic table',
+ veShell:(v,p)=>`${v} valence e⁻ (shell n = ${p})`,dots:n=>`${n} dot${n>1?'s':''}`,
+ tNg:['full shell','neither gains nor loses e⁻'],tTr:s=>s=='Fe'?'loses 2 or 3 e⁻':'loses 1 or 2 e⁻',tM:v=>`loses ${v} e⁻`,tNm:n=>`needs ${n} e⁻`,tNm2:ion=>`gains (${ion}) or shares`,
+ enTitle:'Electronegativity (Pauling)',enNg:'— (noble gas)',
+ capIon:'oppositely charged ions attract each other',capMet:'cations fixed in a lattice + a sea of freely moving electrons',capNone:'full outer shell: no bond',
+ capSpI:'ionic bond (special case, see explanation)',capSpC:'covalent bond (special case, see explanation)',
+ capCov:(n,k,lc,ll,C,L,same)=>`${n} ${TX.en.kn[k]} bond${n>1?'s':''} · lone pairs: ${same?lc+' on each atom':lc+' on '+C+', '+ll+' on each '+L}`,
+ toSea:'to the electron sea',
+ s0h:'1. Position in the periodic table',s0p:(e,n)=>`<b>${e.s}</b> (${n}, Z = ${e.z}) is in <b>group ${e.g}</b>, <b>period ${e.p}</b>.`,
+ kM:tr=>`It is a <b>${tr?'transition ':''}metal</b>.`,kNm:'It is a <b>non-metal</b>.',kNg:'It is a <b>noble gas</b>.',
+ s0n:'The period gives the valence shell (n = period number). The group tells us how many electrons that shell holds.',
+ s1h:'2. Shortened electron configuration',s1v:v=>`${v} valence electron${v>1?'s':''}`,
+ s1n:'The symbol in brackets is the previous noble gas: it stands for the inner shells. Quick rule: groups 1 and 2 → valence e⁻ = group number; groups 13 to 18 → group number − 10 (He has 2).',
+ s1tr:' In transition metals the d electrons stay inside: we only count the ns ones.',
+ s2h:'3. Lewis structure',s2p:'Write the symbol and, around it, <b>one dot per valence electron</b>: first one on each side, then pair them up.',
+ s2n:'Each atom has its own colour so you can follow its electrons in the animation. The less electronegative element always goes on the left, as it is written first in the formula.',
+ s3h:'4. What does each atom want to do?',s3oct:'<b>Octet rule:</b> atoms tend to end up with 8 electrons in their outer shell, like the noble gases (H with 2, like He).',
+ s3ng:e=>`<b>${e.s}</b> already has ${e.ve} e⁻ in its outer shell: it is stable and does not need to bond.`,
+ s3tr:e=>`<b>${e.s}</b> is a metal: it tends to lose electrons, but it can lose ${e.s=='Fe'?'2 or 3 (Fe²⁺ / Fe³⁺)':'1 or 2 (Cu⁺ / Cu²⁺)'}.`,
+ s3m:(e,ion)=>`<b>${e.s}</b> is a metal: it easily <b>loses</b> its ${e.ve} valence e⁻ and becomes the cation <b>${ion}</b>.`,
+ s3nm:(e,n,ion)=>`<b>${e.s}</b> is a non-metal: it needs ${n} more e⁻ to ${e.s=='H'?'have 2 (like He)':'complete its octet'}. It gets them by <b>gaining</b> them (anion ${ion}) or by <b>sharing</b> them.`,
+ s3en:d=>`Electronegativity difference: ${d}. As a rough guide, if it is large (over 1.7) the bond is ionic; if it is small between non-metals, covalent.`,
+ s4h:'5. Type of bond:',s4ion:'<b>Metal + non-metal → ionic bond.</b>',
+ s4ionD:(M,X,mi,xi,qM,qX,nM,nX,m,x)=>`The ${m} atom <b>gives</b> electrons to the ${x} atom: <b>${mi}</b> cations and <b>${xi}</b> anions form, and they attract each other because their charges are opposite.</p><p>Each ${M} gives ${qM} e⁻ and each ${X} takes ${qX}: so we need <b>${nM} ${M}</b> for every <b>${nX} ${X}</b>. No molecules form: the ions arrange themselves in a crystal lattice.`,
+ spTr:(n,ions)=>`${n[0].toUpperCase()+n.slice(1)} is a transition metal that can form ions with different charges (${ions}), so its formula cannot be worked out with the octet rule alone. You need to know which charge it uses.`,
+ spC:'Carbon almost never forms ions: with metals it gives carbides, which are beyond this level.',
+ s4cov:'<b>Non-metal + non-metal → covalent bond.</b> Neither gives up electrons easily, so they <b>share</b> them. Each shared pair of electrons is one bond: single (1 pair), double (2) or triple (3).',
+ s4same:(s,k,kn,h)=>`Each ${s} needs ${k} more e⁻ and shares ${k} with the other: a <b>${kn} bond</b>. This way both complete ${h?'their shell (2 e⁻)':'their octet'}.`,
+ s4cd:(cn,need,ln,k,n,L,kn)=>`${cn[0].toUpperCase()+cn.slice(1)} needs ${need} e⁻ and each ${ln} atom can share ${k}: it bonds to <b>${n} ${L}</b> with ${n>1?'':'a '}<b>${kn} bond${n>1?'s':''}</b>. Pairs that are not shared are <b>lone pairs</b>.`,
+ s4geo:'The Lewis structure does not show the real shape of the molecule (for example, H₂O is bent).',
+ spCov:ex=>`Both are non-metals, so the bond is covalent. But their real compounds (for example ${ex||'those of this pair'}) have bonds that the simple octet rule cannot explain.`,
+ same:{C:'Carbon atoms bond to each other forming giant covalent networks: diamond and graphite. Each C forms 4 covalent bonds with other C atoms.',P:'White phosphorus forms P₄ molecules: each P bonds to 3 other P atoms with single bonds and keeps one lone pair.',S:'Sulfur forms S₈ rings: each S bonds to 2 other S atoms with single bonds and keeps two lone pairs.'},
+ diamond:'C (diamond)',
+ s4met:'<b>Metal + metal → metallic bond.</b> Each atom releases its valence electrons and becomes a cation. These electrons form a <b>sea (or cloud) of electrons</b> that moves freely among the cations and holds them together.',
+ s4alloy:b=>`Mixing different metals gives an <b>alloy</b>${b?' (copper + zinc = brass)':''}.`,
+ s4none:(n,v)=>`<b>No bond forms.</b> ${n[0].toUpperCase()+n.slice(1)} is a noble gas: its outer shell is already full (${v} e⁻), so it does not gain, lose or share electrons.`,
+ s4offI:'When the animation ends, each transferred electron is marked with an arrow from its place on the metal to its new place on the non-metal.',
+ s4offC:'When the animation ends, each shared pair is replaced by a line (bond). Use the button to see the dots again.',
+ s5h:'6. Formula and properties',s5none:'Noble gases are written as single atoms (monatomic gases).',
+ alloy:'alloy',metName:n=>'metallic '+n,s5alloy:'An alloy has no fixed formula: the proportion of each metal can vary.',s5met:'Only the symbol is written: there are no molecules, just a lattice of cations surrounded by electrons.',
+ s5ion:(sum,f)=>`The total charge must be zero: ${sum} = 0 → <b>${f}</b>. Trick: the charges swap over as subscripts and are simplified. The metal is written first.`,
+ s5cov:list=>`It is a <b>molecule</b> made of ${list}. The less electronegative element is written first in the formula.`,
+ props:{ionico:['Crystalline solids at room temperature','High melting and boiling points','Many dissolve in water','Conduct electricity when molten or dissolved, but not as solids','Hard but brittle'],
+  covalente:['Made of molecules','Gases, liquids or soft solids at room temperature','Low melting and boiling points','Do not conduct electricity'],
+  red:['Very hard solids (diamond)','Very high melting points','Insoluble in water','Do not conduct electricity (except graphite)'],
+  metalico:['Solids at room temperature (except mercury)','Good conductors of heat and electricity','Metallic lustre','Ductile (wires) and malleable (sheets)'],
+  ninguno:['Gases made of single atoms','Very unreactive']},
+ ionName:(m,x)=>`${m} ${x}`,
+ qt:{ve:'Valence electrons',cfg:'Electron configuration',lewis:'Lewis structure',tipo:'Type of bond',formula:'Formula'},
+ tOpts:{ionico:'Ionic',covalente:'Covalent',metalico:'Metallic',ninguno:'No bond'},
+ qProg:(i,n)=>`Question ${i} of ${n}`,qScore:s=>`Score: ${s}`,check:'Check',clear:'Clear',nextQ:'Next question ▶',seeRes:'See result',seeDemo:'See it in the demo',
+ right:'Correct!',wrong:'Not quite.',answerIs:a=>`The answer is <b>${a}</b>.`,placed:v=>`You placed ${v} e⁻.`,finished:'Quiz finished',result:'Result',newTest:'New quiz',
+ endMsg:['Perfect!','Very good!','Good, but review your mistakes in the demo.','Go through the demo step by step and try again.'],
+ qVe:e=>`The element <b>${e.s}</b> is in group ${e.g}, period ${e.p}. How many valence electrons does it have?`,
+ wVe:(e,c)=>`${e.s}: ${c} → ${e.ve} valence e⁻.${e.g>=13?' Group '+e.g+' − 10 = '+e.ve+'.':''}`,
+ qCfg:(e,n)=>`What is the shortened electron configuration of <b>${n} (${e.s})</b>, group ${e.g}, period ${e.p}?`,
+ wCfg:(e,core)=>`The previous noble gas is ${core||'— (none)'} and the valence shell is n = ${e.p}, with ${e.ve} e⁻: ${e.val}.`,
+ qLew:e=>`Draw the Lewis structure of <b>${e.s}</b> (group ${e.g}, period ${e.p}): click the gaps to add or remove electrons.`,
+ wLew:(e,d)=>`${e.s} has ${e.ve} valence e⁻ (${e.val}), so it gets ${d}.`,
+ qTipo:(a,b)=>a==b?`What type of bond holds <b>${a}</b> atoms together?`:`What type of bond forms between <b>${a}</b> and <b>${b}</b>?`,
+ wTipo:{ionico:'Metal + non-metal: the metal gives up electrons and ions form.',covalente:'Non-metal + non-metal: they share electrons.',metalico:'Metal + metal: a sea of electrons among cations.',ninguno:'A noble gas already has a full outer shell.'},
+ qF:(a,b)=>`What is the formula of the compound formed by <b>${a}</b> and <b>${b}</b>?`,
+ wFi:(mi,xi,f,n)=>`${mi} and ${xi}: total charge 0 → ${f} (${n}).`,wFc:(C,need,L,k,f,n)=>`${C} needs ${need} e⁻ and each ${L} shares ${k}: ${f}${n?' ('+n+')':''}.`}};
+const SPEX={'O-S':'SO₂, SO₃','N-O':'NO, NO₂','O-P':'P₄O₁₀','C-N':'CN⁻','N-S':'S₄N₄','P-S':'P₄S₃','I-O':'I₂O₅','N-P':'P₃N₅','C-P':'—'};
+let lang='es',L=TX.es;
+try{const s=localStorage.getItem('enlace-lang');if(TX[s])lang=s}catch(e){}
+L=TX[lang];
+
+/* ---------- chemistry ---------- */
+const SUPD='⁰¹²³⁴⁵⁶⁷⁸⁹',SUBD='₀₁₂₃₄₅₆₇₈₉';
+const supNum=t=>{let n='';for(const ch of t){const i=SUPD.indexOf(ch);if(i>=0)n+=i}return +n||0};
+const toSup=n=>String(n).split('').map(d=>SUPD[d]).join('');
+const sub=n=>n==1?'':String(n).split('').map(d=>SUBD[d]).join('');
+const chg=q=>(Math.abs(q)==1?'':toSup(Math.abs(q)))+(q>0?'⁺':'⁻');
+const chgTxt=q=>(Math.abs(q)==1?'':Math.abs(q))+(q>0?'+':'−');
+const num=x=>lang=='en'?x.toFixed(2):x.toFixed(2).replace('.',',');
+const gcd=(a,b)=>b?gcd(b,a%b):a;
+const pos=z=>{if(z==1)return[1,1];if(z==2)return[18,1];if(z<=18){const p=z<=10?2:3,i=z-(p==2?2:10);return[i<=2?i:i+10,p]}return z<=36?[z-18,4]:[z-36,5]};
+const EL={};
+SYM.forEach((s,i)=>{const z=i+1,[g,p]=pos(z),d=D[s],e={s,z,g,p,sel:!!d};if(d){Object.assign(e,{t:d[0],en:d[1],core:d[2],val:d[3],tr:g>=3&&g<=12});e.ve=d[3].split(' ').reduce((a,x)=>a+supNum(x.slice(2)),0)}EL[s]=e});
+const nm=e=>NAMES[lang][e.s]||e.s;
+const need=e=>e.s=='H'?1:8-e.ve;
+const duet=e=>e.s=='H'||e.s=='He';
+const SEQ='B Si C Sb As P N H Te Se S At I Br Cl O F'.split(' ');
+const fU=parts=>parts.map(([s,n])=>s+sub(n)).join('');
+const fH=parts=>parts.map(([s,n])=>s+(n>1?`<sub>${n}</sub>`:'')).join('');
+const enKey=e=>e.t=='ng'?9:e.en;
+const orderPair=(a,b)=>enKey(EL[a])<=enKey(EL[b])?[a,b]:[b,a];
+
+function analyze(a0,b0){
+  const[a,b]=orderPair(a0,b0),A=EL[a],B=EL[b],R={A,B,special:null,key:[a,b].sort().join('-')};
+  if(A.t=='ng'||B.t=='ng'){R.type='ninguno';return R}
+  if(A.t=='m'&&B.t=='m'){R.type='metalico';R.alloy=a!=b;if(a==b)R.parts=[[a,1]];return R}
+  if(A.t!=B.t){
+    const M=A.t=='m'?A:B,X=A.t=='m'?B:A;R.type='ionico';R.M=M;R.X=X;
+    if(M.s=='Fe'||M.s=='Cu'){R.special='tr';return R}
+    if(X.s=='C'){R.special='C';return R}
+    const qM=M.ve,qX=need(X),g=gcd(qM,qX);Object.assign(R,{qM,qX,nM:qX/g,nX:qM/g});
+    R.parts=[[M.s,R.nM],[X.s,R.nX]];return R}
+  R.type='covalente';
+  if(a==b){
+    if('CPS'.includes(a)&&a.length==1){R.special='same';R.sameNet=a;return R}
+    Object.assign(R,{C:A,L:B,n:1,k:need(A),parts:[[a,2]]});return R}
+  const va=need(A),vb=need(B);
+  let C,Lg;
+  if(va>vb){C=A;Lg=B}else if(vb>va){C=B;Lg=A}else{C=SEQ.indexOf(a)<SEQ.indexOf(b)?A:B;Lg=C==A?B:A}
+  if(['O-S','N-P','I-O'].includes(R.key)||need(C)%need(Lg)){R.special='cov';return R}
+  const n=need(C)/need(Lg),k=need(Lg);Object.assign(R,{C,L:Lg,n,k});
+  R.parts=SEQ.indexOf(C.s)<SEQ.indexOf(Lg.s)?[[C.s,1],[Lg.s,n]]:[[Lg.s,n],[C.s,1]];
+  return R}
+function cname(R){if(!R.parts)return'';if(R.type=='ionico')return L.ionName(nm(R.M),ANION[lang][R.X.s]);const m=MOL[fU(R.parts)];return m?m[LI[lang]]:''}
+function specialTxt(R){if(R.special=='tr')return L.spTr(nm(R.M),R.M.s=='Fe'?'Fe²⁺ / Fe³⁺':'Cu⁺ / Cu²⁺');if(R.special=='C')return L.spC;if(R.special=='same')return L.same[R.sameNet];return L.spCov(SPEX[R.key])}
+
+/* ---------- drawing helpers ---------- */
+const SD=[[0,-1],[1,0],[0,1],[-1,0]];
+function lewis(x,y,cnt,du,r=27,o=7){
+  const out=[];
+  if(du){for(let i=0;i<cnt;i++)out.push([x+(cnt==1?0:(i?o:-o)),y-r]);return out}
+  for(let i=0;i<cnt;i++){const sd=i%4,[dx,dy]=SD[sd],two=cnt>4+sd,f=two?(i<4?-o:o):0;out.push([x+dx*r-dy*f,y+dy*r+dx*f])}
+  return out}
+const kcls=e=>'c-'+e.t;
+const atomSVG=(e,x,y,ec,cnt=e.ve)=>`<g><circle cx="${x}" cy="${y}" r="19" class="${kcls(e)}"/><text x="${x}" y="${y}" dy=".36em" class="sym">${e.s}</text>${lewis(x,y,cnt,duet(e)).map(([a,b])=>`<circle cx="${a}" cy="${b}" r="4.6" class="${ec}"/>`).join('')}</g>`;
+const xsFor=(n,sp=170,c=320)=>Array.from({length:n},(_,i)=>c+(i-(n-1)/2)*sp);
+function colOf(R,e,idx){if(R.A.s==R.B.s)return idx%2?'eb':'ea';return e.s==R.A.s?'ea':'eb'}
+
+const DEFS=`<defs><marker id="ahm" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="ahp"/></marker><marker id="ahb" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" class="ahi"/></marker></defs>`;
+/* ---------- animated scene engine ---------- */
+const svg=$('#stage');let wTimer=null,lateTimer=null,offTimer=null;
+const tr=(x,y)=>`translate(${x.toFixed(1)}px,${y.toFixed(1)}px)`;
+const reduced=()=>matchMedia('(prefers-reduced-motion: reduce)').matches;
+function stopTimers(){clearInterval(wTimer);clearTimeout(lateTimer);clearTimeout(offTimer)}
+function render(sc,anim){
+  let h=DEFS+`<g class="bonds">${sc.lines||''}</g>`;
+  h+=sc.atoms.map((a,i)=>`<g id="sa${i}" style="transform:${anim?tr(a.x0,a.y0):tr(a.x1,a.y1)}"><circle r="19" class="${a.c}"/><text class="sym" dy=".36em">${a.s}</text></g>`).join('');
+  h+=sc.els.map((e,i)=>`<circle r="4.6" id="se${i}" class="e ${e.c}${e.bond?' bond':''}" style="transform:${anim?tr(e.x0,e.y0):tr(e.x1,e.y1)}"/>`).join('');
+  const tok=String(Math.random());h+=`<g id="late" data-t="${tok}" style="opacity:${anim?0:1};transition:opacity .6s">${sc.extra||''}</g>`;
+  svg.innerHTML=h;
+  if(anim){svg.getBoundingClientRect();
+    requestAnimationFrame(()=>requestAnimationFrame(()=>{if(!$('#late')||$('#late').dataset.t!=tok)return;
+      sc.atoms.forEach((a,i)=>{const g=$('#sa'+i);g.style.transition=`transform ${a.dur||1.2}s ease-in-out ${a.d||0}s`;g.style.transform=tr(a.x1,a.y1)});
+      sc.els.forEach((e,i)=>{const c=$('#se'+i);c.style.transition=`transform ${e.dur||1}s ease-in-out ${e.d||0}s,opacity .4s`;c.style.transform=tr(e.x1,e.y1)});
+      $('#late').style.transitionDelay=(sc.late||1)+'s';$('#late').style.opacity=1}))}
+  if(sc.wander){const go=()=>{const els=[...svg.querySelectorAll('.e')];const step=()=>els.forEach(c=>{const[x,y]=sc.wander();c.style.transition='transform 1.8s linear';c.style.transform=tr(x,y)});step();wTimer=setInterval(step,1800)};
+    if(anim)lateTimer=setTimeout(go,(sc.late||1)*1000+300);else go()}
+  return anim}
+
+/* ionic: metals in the left column, non-metals in the right column, as in the formula */
+function sceneIonic(R){
+  const{M,X,nM,nX,qM,qX}=R,ym=xsFor(nM,112,195),yx=xsFor(nX,112,195),xm=190,xx=450,atoms=[],els=[],moves=[];
+  const full=X.s=='H'?2:8,cm=colOf(R,M),cx=colOf(R,X),q=[];
+  yx.forEach(y=>{atoms.push({s:X.s,c:kcls(X),x0:xx,y0:y,x1:xx,y1:y});const fin=lewis(xx,y,full,duet(X)),ini=lewis(xx,y,X.ve,duet(X));
+    ini.forEach((p,i)=>els.push({c:cx,x0:p[0],y0:p[1],x1:fin[i][0],y1:fin[i][1],d:.2,dur:.8}));
+    for(let t=X.ve;t<full;t++)q.push(fin[t])});
+  let k=0;
+  ym.forEach(y=>{atoms.push({s:M.s,c:kcls(M),x0:xm,y0:y,x1:xm,y1:y});lewis(xm,y,M.ve,false).forEach(p=>{const f=q[k];moves.push([p,f]);els.push({c:cm,x0:p[0],y0:p[1],x1:f[0],y1:f[1],d:.4+k*.45,dur:1.1});k++})});
+  const late=.4+k*.45+1.1;
+  let ex=ym.map(y=>`<text x="${xm-30}" y="${y-22}" class="chg" style="text-anchor:end">${chgTxt(qM)}</text>`).join('');
+  ex+=yx.map(y=>`<path class="brk" d="M${xx-38} ${y-44}h-7v88h7M${xx+38} ${y-44}h7v88h-7"/><text x="${xx+48}" y="${y-40}" class="chg">${chgTxt(-qX)}</text>`).join('');
+  ex+=moves.map(([p,f],i)=>{const dx=f[0]-p[0],dy=f[1]-p[1],Lg=Math.hypot(dx,dy),ux=dx/Lg,uy=dy/Lg,b=-(28+(i%3)*10),cx=(p[0]+f[0])/2-uy*b,cy=(p[1]+f[1])/2+ux*b,ex2=f[0]-ux*8,ey2=f[1]-uy*8;
+    return`<circle cx="${p[0]}" cy="${p[1]}" r="4.6" class="${cm}"/><path class="curv" marker-end="url(#ahm)" d="M${(p[0]+ux*7).toFixed(1)} ${(p[1]+uy*7).toFixed(1)}Q${cx.toFixed(1)} ${cy.toFixed(1)} ${ex2.toFixed(1)} ${ey2.toFixed(1)}"/>`}).join('');
+  ex+=`<text x="320" y="405" class="cap">${L.capIon}</text>`;
+  return{atoms,els,extra:ex,late}}
+
+function sceneCov(R){
+  const{C,L:Lg,n,k}=R,dirs={1:[[1,0]],2:[[-1,0],[1,0]],3:[[-1,0],[1,0],[0,1]],4:[[0,-1],[1,0],[0,1],[-1,0]]}[n];
+  const Cf=n==1?[270,200]:n==3?[320,180]:[320,205],d=100,Ci=n==1?[180,200]:Cf;
+  const cc=R.A.s==R.B.s?'ea':colOf(R,C),cl=R.A.s==R.B.s?'eb':colOf(R,Lg);
+  const atoms=[{s:C.s,c:kcls(C),x0:Ci[0],y0:Ci[1],x1:Cf[0],y1:Cf[1]}],els=[];let lines='';
+  const cIni=lewis(Ci[0],Ci[1],C.ve,duet(C)),cFin=[];
+  const pairAt=(P,s)=>{const p=[-s[1],s[0]];return[[P[0]+s[0]*25+p[0]*6,P[1]+s[1]*25+p[1]*6],[P[0]+s[0]*25-p[0]*6,P[1]+s[1]*25-p[1]*6]]};
+  const pick=(lp,outer,perps,free)=>{const ord=lp==1?[outer,...perps]:[...perps,outer];return ord.filter(s=>free.some(f=>f[0]==s[0]&&f[1]==s[1])).slice(0,lp)};
+  dirs.forEach(u=>{
+    const p=[-u[1],u[0]],Lf=[Cf[0]+u[0]*d,Cf[1]+u[1]*d],ext=u[1]?150:185,Li=n==1?[460,200]:[Cf[0]+u[0]*ext,Cf[1]+u[1]*ext];
+    atoms.push({s:Lg.s,c:kcls(Lg),x0:Li[0],y0:Li[1],x1:Lf[0],y1:Lf[1]});
+    const mid=[Cf[0]+u[0]*d/2,Cf[1]+u[1]*d/2],lFin=[];
+    for(let j=0;j<k;j++){const o=(j-(k-1)/2)*11;cFin.push({p:[mid[0]-u[0]*5+p[0]*o,mid[1]-u[1]*5+p[1]*o],bond:1});lFin.push({p:[mid[0]+u[0]*5+p[0]*o,mid[1]+u[1]*5+p[1]*o],bond:1});
+      const o2=(j-(k-1)/2)*8;lines+=`<line class="bl" x1="${Cf[0]+u[0]*22+p[0]*o2}" y1="${Cf[1]+u[1]*22+p[1]*o2}" x2="${Lf[0]-u[0]*22+p[0]*o2}" y2="${Lf[1]-u[1]*22+p[1]*o2}"/>`}
+    pick((Lg.ve-k)/2,u,[p,[-p[0],-p[1]]],SD).forEach(s=>pairAt(Lf,s).forEach(q=>lFin.push({p:q})));
+    lewis(Li[0],Li[1],Lg.ve,duet(Lg)).forEach((q,i)=>els.push({c:cl,x0:q[0],y0:q[1],x1:lFin[i].p[0],y1:lFin[i].p[1],bond:lFin[i].bond,d:.1+i*.03,dur:1.3}))});
+  const u0=dirs[0],p0=[-u0[1],u0[0]],free=SD.filter(s=>!dirs.some(u=>u[0]==s[0]&&u[1]==s[1]));
+  pick((C.ve-n*k)/2,[-u0[0],-u0[1]],[p0,[-p0[0],-p0[1]]],free).forEach(s=>pairAt(Cf,s).forEach(q=>cFin.push({p:q})));
+  cIni.forEach((q,i)=>els.push({c:cc,x0:q[0],y0:q[1],x1:cFin[i].p[0],y1:cFin[i].p[1],bond:cFin[i].bond,d:.1+i*.03,dur:1.3}));
+  atoms.forEach(a=>{a.dur=1.3;a.d=.1});
+  const ex=`<text x="320" y="400" class="cap">${L.capCov(n,k,(C.ve-n*k)/2,(Lg.ve-k)/2,C.s,Lg.s,C.s==Lg.s)}</text>`;
+  return{atoms,els,lines,extra:ex,late:1.5}}
+
+function sceneMetal(R){
+  const atoms=[],els=[],pts=[];
+  for(let r=0;r<3;r++)for(let i=0;i<5;i++){const e=R.alloy&&(i+r)%2?R.B:R.A,x=96+i*112,y=90+r*112;pts.push([x,y]);atoms.push({s:e.s,c:kcls(e),x0:x,y0:y,x1:x,y1:y,e})}
+  const rnd=()=>{for(let t=0;t<40;t++){const x=30+Math.random()*580,y=40+Math.random()*320;if(pts.every(([a,b])=>(a-x)**2+(b-y)**2>26**2))return[x,y]}return[320,30]};
+  atoms.forEach((a,ai)=>lewis(a.x1,a.y1,a.e.ve,false).forEach(p=>{const f=rnd();els.push({c:a.e.s==R.A.s?'ea':'eb',x0:p[0],y0:p[1],x1:f[0],y1:f[1],d:.2+ai*.06,dur:1.2})}));
+  const ex=atoms.map(a=>`<text x="${a.x1+18}" y="${a.y1-16}" class="chg">${chgTxt(a.e.ve)}</text>`).join('')+`<text x="320" y="405" class="cap">${L.capMet}</text>`;
+  return{atoms,els,extra:ex,late:.2+15*.06+1.2,wander:rnd}}
+
+function sceneAtoms(R,cap){
+  const AL=R.A.s==R.B.s?[R.A]:[R.A,R.B],xs=AL.length==1?[320]:[220,420],atoms=[],els=[];
+  AL.forEach((e,i)=>{atoms.push({s:e.s,c:kcls(e),x0:xs[i],y0:190,x1:xs[i],y1:190});lewis(xs[i],190,e.ve,duet(e)).forEach(p=>els.push({c:i?'eb':'ea',x0:p[0],y0:p[1],x1:p[0],y1:p[1]}))});
+  return{atoms,els,extra:`<text x="320" y="290" class="cap">${cap}</text>`,late:.2}}
+
+function scene(R){
+  if(R.type=='ionico'&&!R.special)return sceneIonic(R);
+  if(R.type=='covalente'&&!R.special)return sceneCov(R);
+  if(R.type=='metalico')return sceneMetal(R);
+  if(R.type=='ninguno')return sceneAtoms(R,L.capNone);
+  return sceneAtoms(R,R.type=='ionico'?L.capSpI:L.capSpC)}
+
+/* ---------- static step pictures ---------- */
+const atomsOf=R=>R.A.s==R.B.s?[R.A]:[R.A,R.B];
+const xsStatic=R=>R.A.s==R.B.s?[320]:[175,465];
+function picCards(R){return atomsOf(R).map((e,i)=>{const x=xsStatic(R)[i];return`<g><rect x="${x-85}" y="70" width="170" height="210" rx="16" class="card"/><rect x="${x-85}" y="70" width="170" height="58" rx="16" class="${kcls(e)}"/><rect x="${x-85}" y="110" width="170" height="18" class="${kcls(e)}" style="stroke:none"/><text x="${x-70}" y="102" class="lab" style="text-anchor:start">Z = ${e.z}</text><text x="${x}" y="190" class="big" style="font-size:56px">${e.s}</text><text x="${x}" y="226" class="lab">${nm(e)}</text><text x="${x}" y="258" class="cap">${L.group(e.g,e.p)}</text></g>`}).join('')+`<text x="320" y="330" class="cap">${R.A.s==R.B.s?L.sameEl:L.findEl}</text>`}
+function picShells(R){return atomsOf(R).map((e,i)=>{const x=xsStatic(R)[i],y=175;let h='';
+  for(let n=1;n<=e.p;n++)h+=`<circle cx="${x}" cy="${y}" r="${22+n*18}" class="ring${n==e.p?' v':''}"/>`;
+  const R2=22+e.p*18;for(let j=0;j<e.ve;j++){const a=-Math.PI/2+j*2*Math.PI/e.ve;h+=`<circle cx="${x+R2*Math.cos(a)}" cy="${y+R2*Math.sin(a)}" r="5.5" class="${i?'eb':'ea'}"/>`}
+  h+=`<circle cx="${x}" cy="${y}" r="17" class="${kcls(e)}"/><text x="${x}" y="${y}" dy=".36em" class="sym" style="font-size:16px">${e.s}</text>`;
+  h+=`<text x="${x}" y="335" class="lab"><tspan style="fill:var(--mut)">${e.core}</tspan> <tspan style="font-weight:600;fill:var(--acc)">${e.val}</tspan></text><text x="${x}" y="365" class="lab" style="font-weight:600">${L.veShell(e.ve,e.p)}</text>`;
+  return h}).join('')}
+const lewisBig=(e,x,y,cls)=>`<g transform="translate(${x} ${y}) scale(1.6) translate(${-x} ${-y})">${atomSVG(e,x,y,cls)}</g>`;
+function picLewis(R){return atomsOf(R).map((e,i)=>{const x=xsStatic(R)[i];return lewisBig(e,x,170,i?'eb':'ea')+`<text x="${x}" y="280" class="lab">${e.s}: ${L.dots(e.ve)}</text>`}).join('')}
+function tendTxt(e){if(e.t=='ng')return L.tNg;if(e.t=='m')return e.s=='Fe'?[L.tTr('Fe'),'Fe²⁺ / Fe³⁺']:e.s=='Cu'?[L.tTr('Cu'),'Cu⁺ / Cu²⁺']:[L.tM(e.ve),'→ '+e.s+chg(e.ve)];
+  return[L.tNm(need(e)),L.tNm2(e.s+chg(-need(e)))]}
+function picTend(R){let h=atomsOf(R).map((e,i)=>{const x=xsStatic(R)[i],[t1,t2]=tendTxt(e);return lewisBig(e,x,140,i?'eb':'ea')+`<text x="${x}" y="232" class="lab" style="font-weight:600">${t1}</text><text x="${x}" y="256" class="lab">${t2}</text>`}).join('');
+  h+=`<text x="40" y="306" class="lab" style="text-anchor:start;font-weight:600">${L.enTitle}</text>`;
+  atomsOf(R).forEach((e,i)=>{const y=326+i*36,w=e.en?e.en/4*420:0;h+=`<text x="40" y="${y+16}" class="lab" style="text-anchor:start">${e.s}</text><rect x="80" y="${y}" width="${w}" height="22" rx="4" class="${i?'eb':'ea'}"/><text x="${88+w}" y="${y+16}" class="lab" style="text-anchor:start">${e.en?num(e.en):L.enNg}</text>`});
+  return h}
+
+/* ---------- explanations ---------- */
+const kindTxt=e=>e.t=='m'?L.kM(e.tr):e.t=='nm'?L.kNm:L.kNg;
+const ul=a=>`<ul>${a.map(t=>`<li>${t}</li>`).join('')}</ul>`;
+function expHTML(i,R){
+  const AL=atomsOf(R),A=R.A,B=R.B;
+  if(i==0)return`<h3>${L.s0h}</h3>`+AL.map(e=>`<p>${L.s0p(e,nm(e))} ${kindTxt(e)}</p>`).join('')+`<p class="note">${L.s0n}</p>`;
+  if(i==1)return`<h3>${L.s1h}</h3>`+AL.map(e=>`<p><b>${e.s}</b>: <span class="core">${e.core}</span> <span class="val">${e.val}</span> → <b>${L.s1v(e.ve)}</b></p>`).join('')+`<p class="note">${L.s1n}${AL.some(e=>e.tr)?L.s1tr:''}</p>`;
+  if(i==2)return`<h3>${L.s2h}</h3><p>${L.s2p}</p><p>${AL.map(e=>`<b>${e.s}</b>: ${L.dots(e.ve)}`).join(' · ')}</p><p class="note">${L.s2n}</p>`;
+  if(i==3){let h=`<h3>${L.s3h}</h3><p>${L.s3oct}</p>`;
+    h+=AL.map(e=>`<p>${e.t=='ng'?L.s3ng(e):e.t=='m'?(e.s=='Fe'||e.s=='Cu'?L.s3tr(e):L.s3m(e,e.s+chg(e.ve))):L.s3nm(e,need(e),e.s+chg(-need(e)))}</p>`).join('');
+    if(A.en&&B.en&&A.s!=B.s)h+=`<p class="note">${L.s3en(num(Math.abs(A.en-B.en)))}</p>`;
+    return h}
+  if(i==4){let h=`<h3>${L.s4h} <span class="tag">${L.tname[R.type]}</span></h3>`;
+    if(R.type=='ionico'){if(R.special)return h+`<p>${L.s4ion}</p><p>${specialTxt(R)}</p>`;
+      const{M,X,qM,qX,nM,nX}=R;return h+`<p>${L.s4ion} ${L.s4ionD(M.s,X.s,M.s+chg(qM),X.s+chg(-qX),qM,qX,nM,nX,nm(M),nm(X))}</p><p class="note">${L.s4offI}</p>`}
+    if(R.type=='covalente'){h+=`<p>${L.s4cov}</p>`;if(R.special)return h+`<p>${specialTxt(R)}</p>`;
+      const{C,L:Lg,n,k}=R;
+      h+=C.s==Lg.s?`<p>${L.s4same(C.s,k,L.kn[k],C.s=='H')}</p>`:`<p>${L.s4cd(nm(C),need(C),nm(Lg),k,n,Lg.s,n>1?L.knp[k]:L.kn[k])}</p><p class="note">${L.s4geo}</p>`;
+      return h+`<p class="note">${L.s4offC}</p>`}
+    if(R.type=='metalico')return h+`<p>${L.s4met}</p>`+(R.alloy?`<p>${L.s4alloy(R.key=='Cu-Zn')}</p>`:'');
+    const g=AL.find(e=>e.t=='ng');return h+`<p>${L.s4none(nm(g),g.ve)}</p>`}
+  let h=`<h3>${L.s5h}</h3>`;
+  if(R.type=='ninguno')return h+`<div class="formula">${AL.map(e=>e.s).join(' + ')}</div><p>${L.s5none}</p>${ul(L.props.ninguno)}`;
+  if(R.type=='metalico')return h+`<div class="formula">${R.alloy?A.s+' + '+B.s:A.s}</div><p class="fname">${R.alloy?L.alloy:L.metName(nm(A))}</p><p>${R.alloy?L.s5alloy:L.s5met}</p>${ul(L.props.metalico)}`;
+  if(R.special){const net=R.sameNet;return h+(net?`<div class="formula">${net=='C'?L.diamond:net=='P'?'P₄':'S₈'}</div>`:'')+`<p>${specialTxt(R)}</p>${ul(L.props[net=='C'?'red':R.type])}`}
+  h+=`<div class="formula">${fH(R.parts)}</div><p class="fname">${cname(R)}</p>`;
+  if(R.type=='ionico'){const{qM,qX,nM,nX}=R;h+=`<p>${L.s5ion(`${nM} × (+${qM}) + ${nX} × (−${qX})`,fU(R.parts))}</p>`}
+  else h+=`<p>${L.s5cov(R.parts.map(([s,n])=>n+' '+s).join(L.and))}</p>`;
+  return h+ul(L.props[R.type])}
+
+/* ---------- periodic table ---------- */
+const pt=$('#pt');
+{let h='<div></div>';for(let g=1;g<=18;g++)h+=`<div class="gh">${g}</div>`;
+ const grid={};SYM.forEach(s=>{const e=EL[s];grid[e.g+'-'+e.p]=e});
+ for(let p=1;p<=5;p++){h+=`<div class="ph">${p}</div>`;for(let g=1;g<=18;g++){const e=grid[g+'-'+p];
+   if(!e)h+='<div class="cell empty"></div>';else if(e.sel)h+=`<button class="cell e ${e.t}" data-s="${e.s}" id="c-${e.s}">${e.s}</button>`;else h+=`<div class="cell" id="c-${e.s}">${e.s}</div>`}}
+ pt.innerHTML=h}
+
+/* ---------- demo ---------- */
+let st={a:'Mg',b:'Cl',slot:0,step:0,lines:false};let mode='demo';
+const EXS=[['Na','Cl'],['Mg','O'],['Ca','Cl'],['Al','O'],['Li','F'],['H','O'],['N','H'],['C','H'],['C','O'],['H','Cl'],['N','N'],['O','O'],['Cl','Cl'],['Na','Na'],['Cu','Cu'],['Cu','Zn'],['Ne','Ne']];
+$('#ex').innerHTML=EXS.map(([a,b])=>{const R=analyze(a,b),lab=R.parts?fH(R.parts):R.alloy?R.A.s+'–'+R.B.s:a;return`<button data-a="${a}" data-b="${b}">${lab}</button>`}).join('');
+function markTable(){document.querySelectorAll('.pt .cell').forEach(c=>c.classList.remove('selA','selB','hl'));
+  if(mode=='demo'){$('#c-'+st.a).classList.add('selA');$('#c-'+st.b).classList.add(st.a==st.b?'selA':'selB')}}
+function drawDemo(anim=true){
+  stopTimers();[st.a,st.b]=orderPair(st.a,st.b);
+  const R=analyze(st.a,st.b);
+  $('#symA').textContent=st.a;$('#nameA').textContent=nm(EL[st.a]);$('#symB').textContent=st.b;$('#nameB').textContent=nm(EL[st.b]);
+  $('#chipA').classList.toggle('on',st.slot==0);$('#chipB').classList.toggle('on',st.slot==1);
+  markTable();
+  $('#steps').innerHTML=L.steps.map((t,i)=>`<li><button data-i="${i}" class="${i==st.step?'on':i<st.step?'done':''}">${i+1}. ${t}</button></li>`).join('');
+  $('#prev').disabled=st.step==0;$('#next').disabled=st.step==5;
+  const canLines=R.type=='covalente'&&!R.special&&st.step>=4;$('#rayas').hidden=!canLines;$('#rayas').classList.toggle('on',st.lines);
+  $('#replay').hidden=st.step!=4;
+  $('#rayas').textContent=st.lines?L.linesOn:L.linesOff;svg.classList.remove('lines');
+  if(st.step<4)svg.innerHTML=[picCards,picShells,picLewis,picTend][st.step](R);
+  else{const sc=scene(R),did=render(sc,st.step==4&&anim);
+    if(canLines&&st.lines){if(did)offTimer=setTimeout(()=>svg.classList.add('lines'),(sc.late+.3)*1000);else svg.classList.add('lines')}}
+  $('#exp').innerHTML=expHTML(st.step,R)}
+pt.addEventListener('click',ev=>{const b=ev.target.closest('button[data-s]');if(!b||mode!='demo')return;
+  if(st.slot==0){st.a=b.dataset.s;st.slot=1}else{st.b=b.dataset.s;st.slot=0}st.lines=true;drawDemo()});
+$('#chipA').onclick=()=>{st.slot=0;drawDemo(false)};$('#chipB').onclick=()=>{st.slot=1;drawDemo(false)};
+$('#ex').addEventListener('click',ev=>{const b=ev.target.closest('button');if(!b)return;st.a=b.dataset.a;st.b=b.dataset.b;st.step=0;st.slot=0;st.lines=true;drawDemo()});
+$('#steps').addEventListener('click',ev=>{const b=ev.target.closest('button');if(!b)return;st.step=+b.dataset.i;drawDemo()});
+$('#prev').onclick=()=>{if(st.step>0){st.step--;drawDemo()}};
+$('#next').onclick=()=>{if(st.step<5){st.step++;drawDemo()}};
+$('#replay').onclick=()=>drawDemo(true);
+$('#rayas').onclick=()=>{st.lines=!st.lines;drawDemo(false)};
+document.addEventListener('keydown',ev=>{if(mode!='demo')return;if(ev.key=='ArrowRight')$('#next').click();if(ev.key=='ArrowLeft')$('#prev').click()});
+
+/* ---------- test ---------- */
+const SELS=SYM.filter(s=>EL[s].sel),MAIN=SELS.filter(s=>!EL[s].tr),METS=SELS.filter(s=>EL[s].t=='m'),NMS=SELS.filter(s=>EL[s].t=='nm'),NGS=SELS.filter(s=>EL[s].t=='ng');
+const rnd=a=>a[Math.floor(Math.random()*a.length)];
+const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const IONOK=[],COVOK=[];
+METS.forEach(m=>NMS.forEach(x=>{if(!analyze(m,x).special)IONOK.push([m,x])}));
+NMS.forEach((a,i)=>NMS.forEach((b,j)=>{if(j>=i&&!analyze(a,b).special)COVOK.push([a,b])}));
+function pairFor(t){if(t=='ionico')return shuffle(rnd(IONOK).slice());if(t=='covalente')return shuffle(rnd(COVOK).slice());if(t=='metalico'){const a=rnd(METS);return[a,Math.random()<.6?a:rnd(METS)]}return shuffle([rnd(NGS),rnd(SELS)])}
+function cfgOpts(e){const ok=(e.core+' '+e.val).trim(),orbs=e.val.split(' '),last=orbs[orbs.length-1],n=supNum(last.slice(2)),cap=last[1]=='s'?2:6,set=new Set([ok]);
+  const withLast=m=>(e.core+' '+[...orbs.slice(0,-1),last.slice(0,2)+toSup(m)].join(' ')).trim();
+  if(n+1<=cap)set.add(withLast(n+1));if(n-1>=1)set.add(withLast(n-1));
+  const cores={'':'[He]','[He]':'[Ne]','[Ne]':'[He]','[Ar]':'[Ne]','[Ar] 3d¹⁰':'[Ar]','[Kr] 4d¹⁰':'[Kr]'};set.add((cores[e.core]+' '+e.val).trim());
+  set.add((e.core+' '+orbs.map(o=>(+o[0]+1)+o.slice(1)).join(' ')).trim());
+  return shuffle([...set].slice(0,4))}
+function fOpts(R){const p=R.parts,set=new Set([fU(p)]),[a,n1]=p[0],[b,n2]=p[1];
+  [[[a,n2],[b,n1]],[[a,1],[b,1]],[[a,1],[b,2]],[[a,2],[b,1]],[[a,n1+1],[b,n2]],[[a,2],[b,3]],[[a,3],[b,2]],[[a,n1],[b,n2+1]]].forEach(q=>{if(set.size<4)set.add(fU(q))});
+  return shuffle([...set])}
+function genTest(){return shuffle(['ve','ve','cfg','cfg','lewis','lewis','tipo','tipo','tipo','formula','formula']).slice(0,10).map(t=>{
+  if(t=='ve'){const s=rnd(MAIN);return{t,els:[s],opts:['1','2','3','4','5','6','7','8'],ok:String(EL[s].ve),demo:[s,s]}}
+  if(t=='cfg'){const s=rnd(MAIN.filter(x=>x!='He')),e=EL[s];return{t,els:[s],opts:cfgOpts(e),ok:(e.core+' '+e.val).trim(),demo:[s,s]}}
+  if(t=='lewis'){const s=rnd(MAIN);return{t,els:[s],ok:String(EL[s].ve),on:[],demo:[s,s]}}
+  if(t=='tipo'){const ty=rnd(['ionico','ionico','covalente','covalente','metalico','ninguno']),[a,b]=pairFor(ty),R=analyze(a,b);return{t,els:[a,b],opts:['ionico','covalente','metalico','ninguno'],ok:R.type,demo:[a,b]}}
+  const pool=Math.random()<.55?IONOK:COVOK.filter(([a,b])=>a!=b),[a,b]=shuffle(rnd(pool).slice()),R=analyze(a,b);return{t,els:[a,b],opts:fOpts(R),ok:fU(R.parts),demo:[a,b]}})}
+let T=null;
+const optLabel=(q,o)=>q.t=='tipo'?L.tOpts[o]:o;
+function qText(q){const e=EL[q.els[0]];
+  if(q.t=='ve')return L.qVe(e);if(q.t=='cfg')return L.qCfg(e,nm(e));if(q.t=='lewis')return L.qLew(e);
+  if(q.t=='tipo')return L.qTipo(q.els[0],q.els[1]);return L.qF(nm(EL[q.els[0]]),nm(EL[q.els[1]]))}
+function qWhy(q){const e=EL[q.els[0]];
+  if(q.t=='ve')return L.wVe(e,`<span class="core">${e.core}</span> <span class="val">${e.val}</span>`);
+  if(q.t=='cfg')return L.wCfg(e,e.core.split(' ')[0]);
+  if(q.t=='lewis')return L.wLew(e,L.dots(e.ve));
+  const R=analyze(q.els[0],q.els[1]);
+  if(q.t=='tipo')return L.wTipo[R.type];
+  return R.type=='ionico'?L.wFi(R.M.s+chg(R.qM),R.X.s+chg(-R.qX),fU(R.parts),cname(R)):L.wFc(R.C.s,need(R.C),R.L.s,R.k,fU(R.parts),cname(R))}
+function cardSVG(els){const one=els.length==1||els[0]==els[1],xs=one?[280]:[170,390],AL=one?[els[0]]:els;
+  return`<svg class="qsvg" viewBox="0 0 560 200">${AL.map((s,i)=>{const e=EL[s],x=xs[i];return`<rect x="${x-80}" y="15" width="160" height="170" rx="14" class="card"/><rect x="${x-80}" y="15" width="160" height="14" rx="7" class="${kcls(e)}"/><text x="${x}" y="105" class="big" style="font-size:50px">${e.s}</text><text x="${x}" y="140" class="lab">${nm(e)}</text><text x="${x}" y="168" class="cap">${L.group(e.g,e.p)}</text>`}).join('')}</svg>`}
+function showQ(){const q=T.q[T.i];
+  $('#tProg').textContent=L.qProg(T.i+1,T.q.length);$('#tScore').textContent=L.qScore(T.score);$('#tBar').style.width=(T.i/T.q.length*100)+'%';
+  document.querySelectorAll('.pt .cell').forEach(c=>c.classList.remove('selA','selB','hl'));q.els.forEach(s=>$('#c-'+s).classList.add('hl'));
+  let h=`<p class="qtype">${L.qt[q.t]}</p><h2>${qText(q)}</h2>`;
+  if(q.t=='lewis'){const e=EL[q.els[0]],sl=lewis(150,95,8,false,54,15);
+    h+=`<svg class="qsvg" viewBox="0 0 300 190" style="max-width:340px" id="lsvg"><circle cx="150" cy="95" r="34" class="${kcls(e)}"/><text x="150" y="95" dy=".36em" class="sym" style="font-size:36px">${e.s}</text>${sl.map((p,i)=>`<circle cx="${p[0]}" cy="${p[1]}" r="10" class="slot${q.on.includes(i)?' on':''}" data-i="${i}"/>`).join('')}</svg><div class="navb"><button class="btn pri" id="qCheck">${L.check}</button><button class="btn" id="qClear">${L.clear}</button></div>`}
+  else h+=cardSVG(q.els)+`<div class="opts" id="qOpts">${q.opts.map(o=>`<button data-o="${o}">${optLabel(q,o)}</button>`).join('')}</div>`;
+  h+=`<div class="fb" id="qFb"></div><div class="navb" id="qNav" hidden><button class="btn pri" id="qNext">${T.i<T.q.length-1?L.nextQ:L.seeRes}</button><button class="btn" id="qDemo">${L.seeDemo}</button></div>`;
+  $('#qcard').innerHTML=h;
+  if(q.t=='lewis'){$('#lsvg').addEventListener('click',ev=>{const c=ev.target.closest('.slot');if(!c||q.done)return;const i=+c.dataset.i,k=q.on.indexOf(i);k<0?q.on.push(i):q.on.splice(k,1);c.classList.toggle('on')});
+    $('#qClear').onclick=()=>{if(q.done)return;q.on=[];document.querySelectorAll('#lsvg .slot').forEach(c=>c.classList.remove('on'))};
+    $('#qCheck').onclick=()=>answer(String(q.on.length))}
+  else $('#qOpts').addEventListener('click',ev=>{const b=ev.target.closest('button');if(b&&!q.done)answer(b.dataset.o)});
+  $('#qNext').onclick=()=>{T.i++;T.i<T.q.length?showQ():showEnd()};
+  $('#qDemo').onclick=()=>{st.a=q.demo[0];st.b=q.demo[1];st.step=q.t=='tipo'||q.t=='formula'?4:q.t=='lewis'?2:1;st.slot=0;st.lines=true;setMode('demo')};
+  if(q.done)paint(q)}
+function answer(v){const q=T.q[T.i];if(q.done)return;q.done=true;q.ans=v;if(v==q.ok)T.score++;paint(q)}
+function paint(q){const ok=q.ans==q.ok;
+  if(q.t!='lewis')document.querySelectorAll('#qOpts button').forEach(b=>{b.disabled=true;if(b.dataset.o==q.ok)b.classList.add('ok');else if(b.dataset.o==q.ans)b.classList.add('ko')});
+  else{$('#qCheck').disabled=true;$('#qClear').disabled=true}
+  const extra=q.t=='lewis'?`<svg class="qsvg" viewBox="0 0 300 110" style="max-width:240px;margin:8px 0 0">${atomSVG(EL[q.els[0]],150,58,'ea')}</svg>`:'';
+  $('#qFb').innerHTML=`<p><span class="r ${ok?'ok':'ko'}">${ok?L.right:L.wrong}</span> ${q.t=='lewis'&&!ok?L.placed(q.ans)+' ':''}${!ok&&q.t!='lewis'?L.answerIs(optLabel(q,q.ok))+' ':''}${qWhy(q)}</p>${extra}`;
+  $('#qNav').hidden=false;$('#tScore').textContent=L.qScore(T.score)}
+function showEnd(){$('#tBar').style.width='100%';$('#tProg').textContent=L.finished;$('#tScore').textContent=L.qScore(T.score);
+  document.querySelectorAll('.pt .cell').forEach(c=>c.classList.remove('hl'));
+  const s=T.score,n=T.q.length,msg=L.endMsg[s==n?0:s>=8?1:s>=5?2:3];
+  $('#qcard').innerHTML=`<div class="final"><p class="qtype">${L.result}</p><div class="formula">${s} / ${n}</div><p class="fname">${msg}</p><button class="btn pri" id="again">${L.newTest}</button></div>`;
+  $('#again').onclick=startTest}
+function startTest(){T={q:genTest(),i:0,score:0};showQ()}
+function setMode(m){mode=m;$('#mDemo').classList.toggle('on',m=='demo');$('#mTest').classList.toggle('on',m=='test');
+  $('#demo').hidden=m!='demo';$('#demoSide').hidden=m!='demo';$('#test').hidden=m!='test';$('#testSide').hidden=m!='test';
+  document.querySelectorAll('.pt button.e').forEach(b=>b.tabIndex=m=='demo'?0:-1);
+  if(m=='demo')drawDemo();else{stopTimers();if(!T)startTest();else if(T.i>=T.q.length)showEnd();else showQ()}}
+$('#mDemo').onclick=()=>setMode('demo');$('#mTest').onclick=()=>setMode('test');
+
+/* ---------- language ---------- */
+function applyLang(){L=TX[lang];document.documentElement.lang=lang;document.title=L.title;
+  document.querySelectorAll('[data-k]').forEach(el=>el.textContent=L[el.dataset.k]);
+  document.querySelectorAll('#langs button').forEach(b=>b.classList.toggle('on',b.dataset.l==lang));
+  document.querySelectorAll('.pt button.e').forEach(b=>b.title=nm(EL[b.dataset.s]));
+  try{localStorage.setItem('enlace-lang',lang)}catch(e){}}
+$('#langs').addEventListener('click',ev=>{const b=ev.target.closest('button');if(!b||b.dataset.l==lang)return;lang=b.dataset.l;applyLang();if(mode=='demo')drawDemo(false);else setMode('test')});
+applyLang();setMode('demo');
+}
+</script>
+</body>
+</html>
