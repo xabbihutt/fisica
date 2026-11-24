@@ -250,7 +250,7 @@ es:{title:'Tipos de enlace',author:'por Xabier Díaz "Xabbihutt"',demo:'Demostra
  s5h:'6. Fórmula y propiedades',s5none:'Los gases nobles se representan como átomos sueltos (gases monoatómicos).',
  alloy:'aleación',metName:n=>n+' metálico',s5alloy:'Una aleación no tiene fórmula fija: la proporción de cada metal puede variar.',s5met:'Se escribe solo el símbolo: no hay moléculas, sino una red de cationes rodeada de electrones.',
  s5ion:(sum,f)=>`La carga total debe ser cero: ${sum} = 0 → <b>${f}</b>. Truco: las cargas se cruzan como subíndices y se simplifican. En la fórmula se escribe primero el metal.`,
- s5cov:list=>`Es una <b>molécula</b> de ${list}. En la fórmula se escribe primero el elemento menos electronegativo.`,
+ s5cov:(list,d)=>`Es una <b>molécula</b> de ${list}.${d?' En la fórmula se escribe primero el elemento menos electronegativo.':''}`,
  props:{ionico:['Sólidos cristalinos a temperatura ambiente','Puntos de fusión y ebullición altos','Muchos se disuelven en agua','Conducen la electricidad fundidos o disueltos, pero no en estado sólido','Duros pero frágiles'],
   covalente:['Formados por moléculas','Gases, líquidos o sólidos blandos a temperatura ambiente','Puntos de fusión y ebullición bajos','No conducen la electricidad'],
   red:['Sólidos muy duros (diamante)','Puntos de fusión muy altos','Insolubles en agua','No conducen la electricidad (salvo el grafito)'],
@@ -319,7 +319,7 @@ gl:{title:'Tipos de enlace',author:'por Xabier Díaz "Xabbihutt"',demo:'Demostra
  s5h:'6. Fórmula e propiedades',s5none:'Os gases nobres represéntanse como átomos soltos (gases monoatómicos).',
  alloy:'aliaxe',metName:n=>n+' metálico',s5alloy:'Unha aliaxe non ten fórmula fixa: a proporción de cada metal pode variar.',s5met:'Escríbese só o símbolo: non hai moléculas, senón unha rede de catións rodeada de electróns.',
  s5ion:(sum,f)=>`A carga total debe ser cero: ${sum} = 0 → <b>${f}</b>. Truco: as cargas crúzanse como subíndices e simplifícanse. Na fórmula escríbese primeiro o metal.`,
- s5cov:list=>`É unha <b>molécula</b> de ${list}. Na fórmula escríbese primeiro o elemento menos electronegativo.`,
+ s5cov:(list,d)=>`É unha <b>molécula</b> de ${list}.${d?' Na fórmula escríbese primeiro o elemento menos electronegativo.':''}`,
  props:{ionico:['Sólidos cristalinos a temperatura ambiente','Puntos de fusión e ebulición altos','Moitos disólvense en auga','Conducen a electricidade fundidos ou disoltos, pero non en estado sólido','Duros pero fráxiles'],
   covalente:['Formados por moléculas','Gases, líquidos ou sólidos brandos a temperatura ambiente','Puntos de fusión e ebulición baixos','Non conducen a electricidade'],
   red:['Sólidos moi duros (diamante)','Puntos de fusión moi altos','Insolubles en auga','Non conducen a electricidade (agás o grafito)'],
@@ -388,7 +388,7 @@ en:{title:'Types of chemical bond',author:'by Xabier Díaz "Xabbihutt"',demo:'De
  s5h:'6. Formula and properties',s5none:'Noble gases are written as single atoms (monatomic gases).',
  alloy:'alloy',metName:n=>'metallic '+n,s5alloy:'An alloy has no fixed formula: the proportion of each metal can vary.',s5met:'Only the symbol is written: there are no molecules, just a lattice of cations surrounded by electrons.',
  s5ion:(sum,f)=>`The total charge must be zero: ${sum} = 0 → <b>${f}</b>. Trick: the charges swap over as subscripts and are simplified. The metal is written first.`,
- s5cov:list=>`It is a <b>molecule</b> made of ${list}. The less electronegative element is written first in the formula.`,
+ s5cov:(list,d)=>`It is a <b>molecule</b> made of ${list}.${d?' The less electronegative element is written first in the formula.':''}`,
  props:{ionico:['Crystalline solids at room temperature','High melting and boiling points','Many dissolve in water','Conduct electricity when molten or dissolved, but not as solids','Hard but brittle'],
   covalente:['Made of molecules','Gases, liquids or soft solids at room temperature','Low melting and boiling points','Do not conduct electricity'],
   red:['Very hard solids (diamond)','Very high melting points','Insoluble in water','Do not conduct electricity (except graphite)'],
@@ -599,7 +599,7 @@ function expHTML(i,R){
   if(R.special){const net=R.sameNet;return h+(net?`<div class="formula">${net=='C'?L.diamond:net=='P'?'P₄':'S₈'}</div>`:'')+`<p>${specialTxt(R)}</p>${ul(L.props[net=='C'?'red':R.type])}`}
   h+=`<div class="formula">${fH(R.parts)}</div><p class="fname">${cname(R)}</p>`;
   if(R.type=='ionico'){const{qM,qX,nM,nX}=R;h+=`<p>${L.s5ion(`${nM} × (+${qM}) + ${nX} × (−${qX})`,fU(R.parts))}</p>`}
-  else h+=`<p>${L.s5cov(R.parts.map(([s,n])=>n+' '+s).join(L.and))}</p>`;
+  else h+=`<p>${L.s5cov(R.parts.map(([s,n])=>n+' '+s).join(L.and),R.parts.length>1)}</p>`;
   return h+ul(L.props[R.type])}
 
 /* ---------- periodic table ---------- */
